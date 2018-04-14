@@ -1,4 +1,4 @@
-# mgcenter
+# WeGDUT
 
 > A Vue.js project
 

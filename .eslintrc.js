@@ -40,6 +40,7 @@ module.exports = {
     'indent': [2, 4, { "SwitchCase": 1 }],
     'arrow-body-style': 0,
     "no-console": 0,
+    'linebreak-style': 0,
   },
   globals: {
     App: true,

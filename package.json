@@ -1,5 +1,6 @@
 {
-  "name": "mgcenter",
+  "name": "wegdut",
+  "appid": "wx45380ff8bc1c2e10",
   "version": "1.0.0",
   "description": "A Vue.js project",
   "author": "yorickili <yorickili@tencent.com>",
@@ -11,8 +12,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "mpvue": "^1.0.1",
-    "vue-cli": "^2.9.3"
+    "mpvue": "^1.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
