@@ -1,0 +1,385 @@
+@charset 'utf-8';
+@import './zan/btn.scss';
+@import './zan/cell.scss';
+@import './zan/field.scss';
+@import './zan/icon.scss';
+@import './zan/panel.scss';
+@import './zan/popup.scss';
+@import './zan/card.scss';
+@import './weui/search.scss';
+
+@import './var.scss';
+@import './extends.scss';
+
+// common
+page {
+    @extend %frame;
+    background: $bgColor;
+}
+.container {
+    @extend %frame;
+}
+
+// components
+.button-container {
+    background-color: $mainColor;
+    border-radius: 5px;
+    width: 80%;
+    margin: 20px 10%;
+}
+.card-container {
+    width: 90%;
+    margin: 10px 5%;
+    border-radius: 25px;
+    background: #FFFFFF;
+    overflow: hidden;
+    .main {
+        padding: 4% 4% 0;
+        .header {
+            @extend %flex;
+            width: 300px;
+            height: 40px;
+            font-size: $smallFontSize;
+            img {
+                width: 40px;
+                height: 40px;
+                display: block;
+            }
+            div {
+                @extend %flexC;
+                @extend %spill;
+                align-items: flex-start;
+                justify-content: center;
+                flex: 1;
+                position: relative;
+                span {
+                    margin: 4px 8px;
+                }
+            }
+            .device {
+                color: $fontColor;
+            }
+        }
+        .body {
+            padding: 10px 0;
+            font-size: $normalFontSize;
+            img {
+                width: 100px;
+                height: 100px;
+                margin: 10px 0 0;
+            }
+        }
+    }
+    .footer {
+        @extend %flex;
+        width: 100%;
+        height: 25px;
+        font-size: $smallFontSize;
+        color: $fontColor;
+        border-top: 1px solid $bgColor;
+        div {
+            @extend %flex;
+            flex: 1;
+            height: 100%;
+            line-height: 20px;
+            border-right: 1px solid $bgColor;
+            img {
+                width: 15px;
+                height: 15px;
+                margin: 0 5px;
+            }
+        }
+    }
+}
+.mover-container {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    @extend %flex;
+    color: #FFFFFF;
+    font-size: 30px;
+    line-height: 50px;
+    border-radius: 25px;
+    background: $mainColor;
+}
+.lessoner-container {
+    width: 80%;
+    border-radius: 15px;
+    padding: 20px 2%;
+    background: rgba(255, 255, 255, 0.8);
+    position: fixed;
+    top: 80px;
+    left: 8%;
+    slider {
+        width: 100%;
+    }
+    .cancel {
+        font-size: 30px;
+        color: red;
+        position: absolute;
+        top: 0;
+        right: 5px;
+        z-index: 2;
+    }
+}
+// pages
+.course-container {
+    @extend %flexC;
+    color: $fontColor;
+    font-size: $smallFontSize;
+    .header {
+        @extend %flex;
+        width: 100%;
+        height: 70rpx;
+        background: #FFFFFF;
+        position: relative;
+        .blank {
+            width: 80rpx;
+            height: 70rpx;
+            background: #FFFFFF;
+        }
+        .week-wrapper {
+            @extend %flexC;
+            flex: 1;
+            height: 100%;
+            .week {
+                @extend %flexC;
+                width: 100%;
+                height: 70rpx;
+                background: #FFFFFF;
+            }
+        }
+    }
+    .body {
+        @extend %flex;
+        flex: 1;
+        width: 100%;
+        .lesson-time-wrapper {
+            @extend %flexC;
+            width: 70rpx;
+            height: 100%;
+            .lesson-time {
+                @extend %flexC;
+                flex: 1;
+                width: 100%;
+                border-top: 1rpx solid rgba(0,0,0,0.1);
+            }
+        }
+        .course-wrapper {
+            flex: 1;
+            height: 100%;
+        }
+    }
+}
+.wall-container {
+    .cover {
+        width: 100%;
+        height: 200px;
+        position: absolute;
+        swiper {
+            @extend %frame;
+            img {
+                @extend %frame;
+            }
+        }
+        .user{
+            @extend %flex;
+            width: 180px;
+            height: 75px;
+            position: absolute;
+            top: 150px;
+            right: 15px;
+            span {
+                @extend %spill;
+                flex: 1;
+                font-size: $largeFontSize;
+                position: relative;
+                top: -2px;
+                right: 0;
+                color: #FFFFFF;
+                text-shadow: #000000 2px 2px 2px;
+            }
+            img {
+                width: 75px;
+                height: 75px;
+            }
+        }
+    }
+    .cards {
+        width: 100%;
+        position: absolute;
+        top: 230px;
+    }
+}
+.explore-container {
+    .zan-panel {
+        margin-top: 25px;
+        top: 20px;
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+        }
+    }
+}
+.login-container {
+    .zan-panel {
+        margin-top: 50px;
+    }
+    .proof {
+        width: 100px;
+        height: 30px;
+    }
+}
+.about-container {
+    .about {
+        margin-top: 100px;
+    }
+    .opinion {
+        width: 80%;
+        height: 150px;
+        margin: 30px auto;
+        padding: 15px;
+        border-radius: 10px;
+        background: #FFFFFF;
+    }
+}
+.comment-container {
+    width: 90%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 10px 0;
+    margin: 0 5%;
+    border-top: 1px solid #ECEDF1;
+    img {
+        width: 30px;
+        height: 30px;
+    }
+    .comment {
+        flex: 1;
+        margin: 0 8px;
+        font-size: 10px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        .text {
+            font-size: 15px;
+            word-break: break-all; 
+        }
+    }
+}
+.origami-container {
+    .comments {
+        width: 90%;
+        background: #FFFFFF;
+        margin: 10px 5%;
+        border-radius: 25px;
+        padding: 20px 0 0;
+    }
+}
+.painter-container {
+    .painter {
+        width: 90%;
+        margin: 3%;
+        padding: 2%;
+        background: #FFFFFF;
+        border-radius: 25px;
+        textarea {
+            width: 90%;
+            height: 100px;
+            margin: 5%;
+        }
+        div {
+            width: 100px;
+            height: 100px;
+            font-size: 70px;
+            border: 1px solid #888888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5% 20px;
+            color: #888888;
+        }
+    }
+}
+.calendar-container {
+    .zan-cell {
+        .icon {
+            color: $mainColor;
+            font-size: 20px;
+            margin-right: 20px;
+        }
+        position: relative;
+        top: 20px;
+        height: 30px;
+        background: #FFFFFF;
+    }
+}
+.score-container {
+    .zan-panel {
+        margin-top: 50px;
+    }
+    .proof {
+        width: 100px;
+        height: 30px;
+    }
+}
+.grade-container {
+    position: absolute;
+    .cover {
+        width: 100%;
+        height: 35%;
+        background: #29BB73;
+        color: #FFFFFF;
+        .text {
+            position: relative;
+            top: 10px;
+            font-size: 20px;
+            text-align: center;
+        }
+        .gpa {
+            position: relative;
+            top: 10px;
+            font-size: 50px;
+            text-align: center;
+        }
+        .tip {
+            position: relative;
+            top: 15px;
+            right: 10px;
+            color: #F1F1F1;
+            font-size: 12px;
+            text-align: right;
+        }
+    }
+    .chart {
+        width: 80%;
+        height: 20%;
+        background: #FFFFFF;
+        border-radius: 10px;
+        position: absolute;
+        left: 10%;
+        top: 25%;
+    }
+    .list {
+        width: 90%;
+        height: 50%;
+        background: #FFFFFF;
+        border-radius: 10px;
+        position: absolute;
+        top: 47%;
+        left: 5%;
+        .zan-cell {
+            .icon {
+                color: #29BB73;
+                font-size: 18px;
+                margin-right: 20px;
+            }
+            border-radius: 10px;
+            height: 20px;
+            background: #FFFFFF;
+        }
+    }
+}
