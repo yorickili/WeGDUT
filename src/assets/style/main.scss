@@ -356,20 +356,20 @@ page {
     }
     .chart {
         width: 80%;
-        height: 20%;
+        height: 135px;
         background: #FFFFFF;
         border-radius: 10px;
         position: absolute;
         left: 10%;
-        top: 25%;
+        top: 24%;
     }
     .list {
         width: 90%;
-        height: 50%;
-        background: #FFFFFF;
+        height: 49%;
+        overflow: hidden;
         border-radius: 10px;
         position: absolute;
-        top: 47%;
+        top: 49%;
         left: 5%;
         .zan-cell {
             .icon {
@@ -377,7 +377,6 @@ page {
                 font-size: 18px;
                 margin-right: 20px;
             }
-            border-radius: 10px;
             height: 20px;
             background: #FFFFFF;
         }
