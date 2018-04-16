@@ -166,6 +166,7 @@ page {
             }
         }
         .course-wrapper {
+            @extend %flex;
             flex: 1;
             height: 100%;
         }

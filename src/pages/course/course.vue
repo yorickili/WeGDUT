@@ -2,7 +2,7 @@
     <movable-area class="container course-container">
         <div class="header">
             <div class="blank" />
-            <div class="week-wrapper" v-for="item in week" :key="item.index">
+            <div class="week-wrapper" v-for="item in week" :key="item.id">
                 <div class="week">
                     <div>{{item.day}}</div>
                     <div>{{item.date}}</div>
@@ -11,16 +11,16 @@
         </div>
         <div class="body">
             <div class="lesson-time-wrapper">
-                <div class="lesson-time" v-for="item in lessonTime" :key="item.index">
+                <div class="lesson-time" v-for="(item, index) in lessonTime" :key="item.id">
                     <div>{{index + 1}}</div>
                     <div>{{item}}</div>
                 </div>
             </div>
             <div class="course-wrapper">
-                <div class="lesson-wrapper">
+                <div class="lesson-wrapper" v-for="(day, index) in course" :key="index">
                     <div class="lesson"
-                        v-for="item in lessons"
-                        :key="item.index"
+                        v-for="(item, index1) in day"
+                        :key="index1"
                         :style="{ background: item.color, flex: item.flex }"
                         @click="changeLesson">
                         <span>{{item.name}}</span>
@@ -73,21 +73,63 @@
                     { flex: 2, color: 'lightblue', name: '高等数学', site: '@教二-323' },
                     { flex: 6, color: '', name: '', site: '' },
                 ],
+                course: [],
                 visible: { Lessoner: false },
             };
         },
         async created() {
-            const calendar = await jointer.getCalendar();
-            console.log(calendar);
+            // const calendar = await jointer.getCalendar();
+            // console.log(calendar);
         },
         onShow() {
-            this.getCourse();
+            if (!wx.getStorageSync('course')) {
+                this.getCourse();
+            }
         },
         methods: {
             async getCourse() {
                 const res = await jointer.getCourse();
+                const parse = ($rows, week) => {
+                    const course = [];
+                    for (let i = 0; i < 7; i += 1) { course.push([]); }
+                    $rows.forEach((item) => {
+                        if (item.startWeek <= week && week <= item.endWeek) {
+                            course[item.day - 1].push(item);
+                        }
+                    });
+                    course.forEach(($day, index) => {
+                        const day = [...$day.sort((a, b) => a.startSection - b.startSection)];
+                        const getBlank = (flex) => {
+                            return { name: '', site: '', teacher: '', color: 'rgba(0, 0, 0, 0)', flex: flex || 12 };
+                        };
+                        if ($day.length === 0) day.push(getBlank());
+                        $day.forEach(($item, index1) => {
+                            const item = $item;
+                            item.flex = (item.endSection - item.startSection) + 1;
+                            const pre = $day[index1 - 1];
+                            const next = $day[index1 + 1];
+                            if (next) {
+                                day.splice(index1 + 1, 0,
+                                    getBlank(next.startSection - item.endSection - 1));
+                            }
+                            if (!pre && item.startSection > 1) {
+                                day.splice(0, 0,
+                                    getBlank(item.startSection - 1));
+                            }
+                            if (!next && item.endSection < 12) {
+                                day.push(getBlank(12 - item.endSection));
+                            }
+                        });
+                        course[index] = day;
+                    });
+                    return course;
+                };
+                const next = () => {
+                    this.course = parse(res.data.rows, 2);
+                    console.log(this.course);
+                };
                 switch (res.code) {
-                    case 200: break;
+                    case 200: next(); break;
                     default: {
                         const { confirm } = await promiser.showModal({ title: '提示', content: '您未登录，点击确定去登录！' });
                         if (confirm) { this.go2login(); }
