@@ -30,6 +30,9 @@
             </div>
         </div>
         <Mover actions="刷新课程&添加课程&更换周数" @handler="moverHandler" />
+        <picker v-if="visible.picker" :range="weeks" :value="weekNow" @change="changeWeek">
+            <div></div>
+        </picker>
         <Lessoner v-if="visible.Lessoner" @submit="changeLesson" @close="closeLessoner" />
     </movable-area>
 </template>
@@ -74,7 +77,15 @@
                     { flex: 6, color: '', name: '', site: '' },
                 ],
                 course: [],
-                visible: { Lessoner: false },
+                visible: { Lessoner: false, picker: true },
+                weeks: (() => {
+                    const arr = [];
+                    for (let i = 1; i <= 22; i += 1) {
+                        arr.push(i);
+                    }
+                    return arr;
+                })(),
+                weekNow: 0,
             };
         },
         async created() {
@@ -82,51 +93,15 @@
             // console.log(calendar);
         },
         onShow() {
-            if (!wx.getStorageSync('course')) {
-                this.getCourse();
-            }
+            if (!wx.getStorageSync('course')) this.getCourse();
+            else this.course = this.parse(wx.getStorageSync('course'), 1);
         },
         methods: {
             async getCourse() {
                 const res = await jointer.getCourse();
-                const parse = ($rows, week) => {
-                    const course = [];
-                    for (let i = 0; i < 7; i += 1) { course.push([]); }
-                    $rows.forEach((item) => {
-                        if (item.startWeek <= week && week <= item.endWeek) {
-                            course[item.day - 1].push(item);
-                        }
-                    });
-                    course.forEach(($day, index) => {
-                        const day = [...$day.sort((a, b) => a.startSection - b.startSection)];
-                        const getBlank = (flex) => {
-                            return { name: '', site: '', teacher: '', color: 'rgba(0, 0, 0, 0)', flex: flex || 12 };
-                        };
-                        if ($day.length === 0) day.push(getBlank());
-                        $day.forEach(($item, index1) => {
-                            const item = $item;
-                            item.flex = (item.endSection - item.startSection) + 1;
-                            const pre = $day[index1 - 1];
-                            const next = $day[index1 + 1];
-                            if (next) {
-                                day.splice(index1 + 1, 0,
-                                    getBlank(next.startSection - item.endSection - 1));
-                            }
-                            if (!pre && item.startSection > 1) {
-                                day.splice(0, 0,
-                                    getBlank(item.startSection - 1));
-                            }
-                            if (!next && item.endSection < 12) {
-                                day.push(getBlank(12 - item.endSection));
-                            }
-                        });
-                        course[index] = day;
-                    });
-                    return course;
-                };
                 const next = () => {
-                    this.course = parse(res.data.rows, 2);
-                    console.log(this.course);
+                    wx.setStorageSync('course', res.data.rows);
+                    this.course = this.parse(res.data.rows, 1);
                 };
                 switch (res.code) {
                     case 200: next(); break;
@@ -137,6 +112,47 @@
                     }
                 }
             },
+            parse($rows, week) {
+                const course = [];
+                const getColor = () => {
+                    const colors = ['#feacaf', '#93d4e7', '#fae497', '#a1dd9f', '#f98cb1', '#93c0f7', '#dae489', '#89b2e4', '#88d5da', '#88da9f', '#dacb88', '#e8c39c', '#eebbb4', '#eeb4e8', '#d6b1f2', '#fddc5'];
+                    const random = Math.floor(Math.random() * colors.length);
+                    return colors[random];
+                };
+                for (let i = 0; i < 7; i += 1) { course.push([]); }
+                $rows.forEach((item) => {
+                    if (item.startWeek <= week && week <= item.endWeek) {
+                        course[item.day - 1].push(item);
+                    }
+                });
+                course.forEach(($day, index) => {
+                    const day = [...$day.sort((a, b) => a.startSection - b.startSection)];
+                    const getBlank = (flex) => {
+                        return { name: '', site: '', teacher: '', color: 'rgba(0, 0, 0, 0)', flex: flex || 12 };
+                    };
+                    if ($day.length === 0) day.push(getBlank());
+                    $day.forEach(($item, index1) => {
+                        const item = $item;
+                        item.color = getColor();
+                        item.flex = (item.endSection - item.startSection) + 1;
+                        const pre = $day[index1 - 1];
+                        const next = $day[index1 + 1];
+                        if (next) {
+                            day.splice(index1 + 1, 0,
+                                getBlank(next.startSection - item.endSection - 1));
+                        }
+                        if (!pre && item.startSection > 1) {
+                            day.splice(0, 0,
+                                getBlank(item.startSection - 1));
+                        }
+                        if (!next && item.endSection < 12) {
+                            day.push(getBlank(12 - item.endSection));
+                        }
+                    });
+                    course[index] = day;
+                });
+                return course;
+            },
             go2login() {
                 wx.navigateTo({ url: '/pages/login/login' });
             },
@@ -146,6 +162,9 @@
                     case 1: this.visible.Lessoner = true; break;
                     default: break;
                 }
+            },
+            changeWeek() {
+                console.log(1);
             },
             changeLesson() {
                 this.visible.Lessoner = true;
