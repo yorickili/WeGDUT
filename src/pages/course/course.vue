@@ -5,7 +5,7 @@
             <div class="week-wrapper" v-for="item in week" :key="item.id">
                 <div class="week">
                     <div>{{item.day}}</div>
-                    <div>{{item.date}}</div>
+                    <!-- <div>{{item.date}}</div> -->
                 </div>
             </div>
         </div>
@@ -23,16 +23,23 @@
                         :key="index1"
                         :style="{ background: item.color, flex: item.flex }"
                         @click="changeLesson">
-                        <span>{{item.name}}</span>
-                        <span>{{item.site}}</span>
+                        <span>{{item.name}} {{item.site}}</span>
                     </div>
                 </div>
             </div>
         </div>
         <Mover actions="刷新课程&添加课程&更换周数" @handler="moverHandler" />
-        <picker v-if="visible.picker" :range="weeks" :value="weekNow" @change="changeWeek">
-            <div></div>
-        </picker>
+        <div v-show="visible.picker" class="picker-container">
+            <div class="handler">
+                <div class="cancel" @click="visible.picker = false">取消</div>
+                <div class="confirm" @click="changeCourse">确定</div>
+            </div>
+            <picker-view class="picker" :value="weeks" indicator-class="indicator" @change="changeWeek">
+                <picker-view-column class="column">
+                    <div class="item" v-for="item in weeks" :key="item.id">第{{item}}周</div>
+                </picker-view-column>
+            </picker-view>
+        </div>
         <Lessoner v-if="visible.Lessoner" @submit="changeLesson" @close="closeLessoner" />
     </movable-area>
 </template>
@@ -71,13 +78,8 @@
                     date: '03-11',
                 }],
                 lessonTime,
-                lessons: [
-                    { flex: 4, color: '', name: '', site: '' },
-                    { flex: 2, color: 'lightblue', name: '高等数学', site: '@教二-323' },
-                    { flex: 6, color: '', name: '', site: '' },
-                ],
                 course: [],
-                visible: { Lessoner: false, picker: true },
+                visible: { Lessoner: false, picker: false },
                 weeks: (() => {
                     const arr = [];
                     for (let i = 1; i <= 22; i += 1) {
@@ -88,20 +90,20 @@
                 weekNow: 0,
             };
         },
-        async created() {
-            // const calendar = await jointer.getCalendar();
-            // console.log(calendar);
-        },
+        created() {},
         onShow() {
             if (!wx.getStorageSync('course')) this.getCourse();
-            else this.course = this.parse(wx.getStorageSync('course'), 1);
+            else this.course = this.parseCourse(wx.getStorageSync('course'), 1);
         },
         methods: {
             async getCourse() {
                 const res = await jointer.getCourse();
                 const next = () => {
                     wx.setStorageSync('course', res.data.rows);
-                    this.course = this.parse(res.data.rows, 1);
+                    wx.setStorageSync('firstDay', res.data.firstDay);
+                    wx.setStorageSync('term', res.data.term);
+                    wx.setStorageSync('lessonCount', res.data.total);
+                    this.course = this.parseCourse(res.data.rows, 1);
                 };
                 switch (res.code) {
                     case 200: next(); break;
@@ -112,10 +114,15 @@
                     }
                 }
             },
-            parse($rows, week) {
+            parseCourse($rows, week) {
                 const course = [];
                 const getColor = () => {
-                    const colors = ['#feacaf', '#93d4e7', '#fae497', '#a1dd9f', '#f98cb1', '#93c0f7', '#dae489', '#89b2e4', '#88d5da', '#88da9f', '#dacb88', '#e8c39c', '#eebbb4', '#eeb4e8', '#d6b1f2', '#fddc5'];
+                    const colors = ['#F7D94C', '#DC9FB4', '#E16B8C', '#F4A7B9', '#DB4D6D',
+                        '#D05A6E', '#BF6766', '#EB6766', '#EB7A77', '#F17C67', '#B9887D',
+                        '#E83015', '#FB966E', '#F05E1C', '#FC9F4D', '#FFBA84', '#FFB11B',
+                        '#BEC23F', '#90B44B', '#5DAC81', '#A8D8B9', '#00AA90', '#66BAB7',
+                        '#A5DEE4', '#58B2DC', '#7DB9DE', '#9B90C2', '#B28FCE', '#986DB2',
+                        '#E03C8A', '#DDD23B'];
                     const random = Math.floor(Math.random() * colors.length);
                     return colors[random];
                 };
@@ -135,6 +142,7 @@
                         const item = $item;
                         item.color = getColor();
                         item.flex = (item.endSection - item.startSection) + 1;
+                        item.site = `@${item.site}`;
                         const pre = $day[index1 - 1];
                         const next = $day[index1 + 1];
                         if (next) {
@@ -160,11 +168,16 @@
                 switch (index) {
                     case 0: this.getCourse(); break;
                     case 1: this.visible.Lessoner = true; break;
+                    case 2: this.visible.picker = true; break;
                     default: break;
                 }
             },
-            changeWeek() {
-                console.log(1);
+            // changeWeek(e) {
+            //     // this.weekNow = e.target.value[0];
+            // },
+            changeCourse() {
+                console.log(this.weeks);
+                this.course = this.parseCourse(wx.getStorageSync('course'), this.weekNow);
             },
             changeLesson() {
                 this.visible.Lessoner = true;
@@ -185,12 +198,54 @@
         justify-content: center;
         flex-direction: column;
         .lesson {
-            width: 100%;
+            width: 40px;
+            color: #FFFFFF;
+            border-radius: 10px;
+            padding: 0 5px; 
             font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
+        }
+    }
+    .picker-container {
+        width: 100%;
+        height: 230px;
+        position: absolute;
+        bottom: 0;
+        .handler {
+            width: 100%;
+            height: 30px;
+            background: #FFFFFF;
+            display: flex;
+            div {
+                width: 50%;
+                height: 30px;
+                padding: 0 10px;
+                line-height: 30px;
+                font-size: 15px;
+            }
+            .confirm {
+                color: #29BB73;
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
+        .picker {
+            width: 100%;
+            height: 200px;
+            .indicator {
+                background: rgba(255, 255, 255, 0.5)
+            }
+            .item {
+                width: 100%;
+                height: 30px;
+                font-size: 12px;
+                color: #000000;
+                line-height: 30px;
+                text-align: center;
+            }
         }
     }
 </style>
