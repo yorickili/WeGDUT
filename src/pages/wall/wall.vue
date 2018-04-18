@@ -48,8 +48,8 @@
         },
         async created() {
             await promiser.getGlobalData();
-            this.avatar = global.data.userInfo.avatarUrl;
-            this.nickname = global.data.userInfo.nickName;
+            this.avatar = global.data.avatarUrl;
+            this.nickname = global.data.nickName;
             const card = {
                 avatar: this.avatar,
                 nickname: this.nickname,

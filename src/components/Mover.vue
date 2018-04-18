@@ -1,5 +1,5 @@
 <template>
-    <movable-view class="mover-container" x="1000" y="1000" direction="all" inertia="true" @click="showActions">
+    <movable-view class="mover-container" direction="all" inertia="true" @click="showActions">
         +
     </movable-view>
 </template>

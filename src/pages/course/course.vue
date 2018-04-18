@@ -22,7 +22,7 @@
                         v-for="(item, index1) in day"
                         :key="index1"
                         :style="{ background: item.color, flex: item.flex }"
-                        @click="changeLesson">
+                        @click="changeLesson(item)">
                         <span>{{item.name}} {{item.site}}</span>
                     </div>
                 </div>
@@ -32,11 +32,11 @@
         <div v-show="visible.picker" class="picker-container">
             <div class="handler">
                 <div class="cancel" @click="visible.picker = false">取消</div>
-                <div class="confirm" @click="changeCourse">确定</div>
+                <div class="confirm" @click="changeWeek">确定</div>
             </div>
-            <picker-view class="picker" :value="weeks" indicator-class="indicator" @change="changeWeek">
-                <picker-view-column class="column">
-                    <div class="item" v-for="item in weeks" :key="item.id">第{{item}}周</div>
+            <picker-view class="picker" :value="weekNow" indicator-class="indicator" @change="changeWeek">
+                <picker-view-column>
+                    <div class="item" v-for="(item, index) in weeks" :key="index">第{{item + 1}}周</div>
                 </picker-view-column>
             </picker-view>
         </div>
@@ -82,12 +82,12 @@
                 visible: { Lessoner: false, picker: false },
                 weeks: (() => {
                     const arr = [];
-                    for (let i = 1; i <= 22; i += 1) {
+                    for (let i = 0; i <= 21; i += 1) {
                         arr.push(i);
                     }
                     return arr;
                 })(),
-                weekNow: 0,
+                weekNow: [0],
             };
         },
         created() {},
@@ -145,13 +145,14 @@
                         item.site = `@${item.site}`;
                         const pre = $day[index1 - 1];
                         const next = $day[index1 + 1];
-                        if (next) {
-                            day.splice(index1 + 1, 0,
-                                getBlank(next.startSection - item.endSection - 1));
+                        if (next && next.name) {
+                            if (next.startSection - item.endSection > 1) {
+                                day.splice(index1 + 1, 0,
+                                    getBlank(next.startSection - item.endSection - 1));
+                            }
                         }
                         if (!pre && item.startSection > 1) {
-                            day.splice(0, 0,
-                                getBlank(item.startSection - 1));
+                            day.unshift(getBlank(item.startSection - 1));
                         }
                         if (!next && item.endSection < 12) {
                             day.push(getBlank(12 - item.endSection));
@@ -172,15 +173,18 @@
                     default: break;
                 }
             },
-            // changeWeek(e) {
-            //     // this.weekNow = e.target.value[0];
-            // },
-            changeCourse() {
-                console.log(this.weeks);
-                this.course = this.parseCourse(wx.getStorageSync('course'), this.weekNow);
+            changeWeek(e) {
+                if (e.type === 'change') {
+                    this.weekNow = e.target.value;
+                } else {
+                    this.course = this.parseCourse(wx.getStorageSync('course'), this.weekNow[0]);
+                    this.visible.picker = false;
+                }
             },
-            changeLesson() {
-                this.visible.Lessoner = true;
+            changeLesson(lesson) {
+                if (lesson.name) {
+                    this.visible.Lessoner = true;
+                }
             },
             closeLessoner() {
                 this.visible.Lessoner = false;
