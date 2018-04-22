@@ -10,9 +10,9 @@ app.$mount();
 export default {
     config: {
         pages: [
-            'pages/course/course',
+            '^pages/course/course',
             'pages/wall/wall',
-            '^pages/explore/explore',
+            'pages/explore/explore',
             'pages/login/login',
             'pages/about/about',
             'pages/news/news',
@@ -22,6 +22,8 @@ export default {
             'pages/grade/grade',
             'pages/score/score',
             'pages/exam/exam',
+            'pages/library/library',
+            'pages/store/store',
         ],
         window: {
             backgroundColor: '#ECEDF1',

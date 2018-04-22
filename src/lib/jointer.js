@@ -1,3 +1,5 @@
+import tool from './tool';
+
 const request = (params) => {
     return new Promise((resolve, reject) => {
         wx.request({
@@ -84,9 +86,68 @@ const getGrade = () => {
 
 const getExam = () => {
     return new Promise(async (resolve) => {
-        const res = await request({ url: '/jwgl/exam', method: 'GET' });
-        resolve(res);
+        const { data } = await request({ url: '/jwgl/exam', method: 'GET' });
+        const list = data.rows;
+        list.forEach((item, i) => {
+            list[i].stamp = new Date(item.date).getTime();
+            list[i].time = `${item.date}  周${item.day}  ${item.time}`;
+            list[i].site = `${item.campus}  ${item.site}`;
+            list[i].surplus = Math.ceil((list[i].stamp - Date.now()) / 86400000);
+            list[i].color = (() => {
+                if (list[i].surplus > 30) return '#28D9A5';
+                else if (list[i].surplus > 7) return '#FFD92B';
+                else if (list[i].surplus >= 0) return '#F56262';
+                return '#888888';
+            })();
+            delete list[i].date;
+            delete list[i].day;
+            delete list[i].campus;
+        });
+        resolve(tool.quickSort(list, 'stamp').reverse());
     });
 };
 
-export default { getProofUrl, getToken, login, getCalendar, getCourse, getGrade, getExam };
+const searchBook = (keyword) => {
+    return new Promise(async (resolve) => {
+        const res = await request({
+            url: '/gdutlibrary/list',
+            method: 'GET',
+            data: { keyword },
+        });
+        const list = res.data.find_ifa_FindFullPage_list1;
+        const whiteKeys = ['no', 'rd', 'name', 'author'];
+        list.forEach((item, i) => {
+            list[i].no = item.CtrlNo;
+            list[i].rd = item.CtrlRd;
+            list[i].name = item.Title;
+            list[i].author = item.Author;
+            Object.keys(item).forEach((key) => {
+                if (whiteKeys.indexOf(key) === -1) {
+                    delete list[i][key];
+                }
+            });
+        });
+        resolve(list);
+    });
+};
+
+const getStore = () => {
+    return new Promise(async (resolve) => {
+        resolve();
+        // const res = await request({
+        //     url: '/'
+        // });
+    });
+};
+
+export default {
+    getProofUrl,
+    getToken,
+    login,
+    getCalendar,
+    getCourse,
+    getGrade,
+    getExam,
+    searchBook,
+    getStore,
+};

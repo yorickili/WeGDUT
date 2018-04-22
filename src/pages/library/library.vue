@@ -1,5 +1,5 @@
 <template>
-    <div class="container library-container">
+    <movable-area class="container library-container">
         <div class="weui-search-bar">
             <div class="weui-search-bar__form">
                 <div class="weui-search-bar__box">
@@ -9,71 +9,50 @@
                 </div>
             </div>
         </div>
-        <div class="zan-panel"  v-for="item in list" :key="item.index">
-            <div class="zan-card">
-                <div class="zan-card__thumb">
-                    <div class="zan-icon zan-icon-goods-collect icon" />
+        <div class="panel">
+            <div class="card" v-for="item in list" :key="item.index">
+                <div class="icon">
+                    <div class="zan-icon zan-icon-goods-collect" />
                 </div>
-                <div class="zan-card__detail">
-                    <div class="zan-card__detail-row name">
-                        <div class="zan-card__left-col zan-ellipsis--l2">
-                            {{item.name}}
-                        </div>
-                    </div>
-                    <div class="zan-card__detail-row author">
-                        <div class="zan-card__left-col">{{item.author}}</div>
-                    </div>
+                <div class="info">
+                    <div class="name">{{item.name}}</div>
+                    <div class="author">{{item.author}}</div>
+                </div>
+                <div class="arrow">
+                    <div class="zan-icon zan-icon-arrow" />
                 </div>
             </div>
         </div>
-    </div>
+        <Mover actions="我的借阅" @handler="moverHandler" />
+    </movable-area>
 </template>
 
 <script>
+    import Mover from '@/components/Mover';
+    import { jointer } from '@/lib';
+
     export default {
+        components: { Mover },
         data() {
             return {
                 word: '',
-                list: [{
-                    name: '书名哈哈哈',
-                    author: '作者是谁？',
-                }, {
-                    name: '书名哈哈哈',
-                    author: '作者是谁？',
-                }],
+                list: [],
             };
         },
         methods: {
-            search() {
-                console.log('search ', this.word);
+            async search() {
+                this.list = await jointer.searchBook(this.word);
+            },
+            moverHandler(index) {
+                switch (index) {
+                    case 0: wx.navigateTo({ url: '/pages/store/store' }); break;
+                    default: break;
+                }
             },
         },
     };
 </script>
 
 <style lang="scss">
-    .library-container {
-        .zan-card {
-            .icon {
-                width: 180rpx;
-                height: 180rpx;
-                padding: 25rpx;
-                font-size: 90rpx;
-                color: #29BB73;
-            }
-            .zan-card__detail{
-                height: 180rpx;
-                display: flex;
-                align-items: flex-start;
-                justify-content: flex-end;
-                flex-direction: column;
-                .name {
-                    flex: 2;
-                }
-                .author {
-                    flex: 1;
-                }
-            }
-        }
-    }
+    
 </style>

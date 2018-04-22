@@ -16,4 +16,16 @@ const getWeekday = (index) => {
     }
 };
 
-export default { getRes, getWeekday };
+const quickSort = (arr, proto) => {
+    if (arr.length <= 1) return arr;
+    const pivot = arr.splice(Math.floor(arr.length / 2), 1)[0];
+    const left = [];
+    const right = [];
+    arr.forEach((i) => {
+        if (i < pivot || i[proto] < pivot[proto]) left.push(i);
+        else right.push(i);
+    });
+    return quickSort(left, proto).concat([pivot], quickSort(right, proto));
+};
+
+export default { getRes, getWeekday, quickSort };

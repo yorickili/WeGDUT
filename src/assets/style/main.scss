@@ -407,7 +407,8 @@ page {
                 .surplus {
                     position: absolute;
                     top: 0;
-                    left: 90%;
+                    right: -10px;
+                    // left: 90%;
                     span {
                         font-size: 30px;
                     }
@@ -502,6 +503,118 @@ page {
             }
             height: 20px;
             background: #FFFFFF;
+        }
+    }
+}
+.library-container {
+    .panel {
+        width: 100%;
+        position: relative;
+        .card {
+            width: 80%;
+            height: 70px;
+            padding: 10px 5%;
+            margin: 10px 5%;
+            border-radius: 10px;
+            background: #FFFFFF;
+            @extend %flex;
+            >div {
+                height: 100%;
+            }
+            .icon {
+                flex: 1;
+                @extend %flex;
+                .zan-icon {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 40px;
+                    color: $mainColor;
+                    position: relative;
+                    top: -8px;
+                    left: -10px;
+                }
+            }
+            .info {
+                flex: 4;
+                width: 66.66%;
+                @extend %flexC;
+                align-items: flex-start;
+                .name {
+                    width: 100%;
+                    font-size: 18px;
+                    @extend %spill;
+                }
+                .author {
+                    width: 100%;
+                    font-size: 14px;
+                    color: $fontColor;
+                    @extend %spill;
+                }
+            }
+            .arrow {
+                flex: 1;
+                @extend %flex;
+                .zan-icon {
+                    width: 20px;
+                    height: 20px;
+                    font-size: 20px;
+                    color: $mainColor;
+                    position: relative;
+                    top: -3px;
+                    left: 22px;
+                }
+            }
+
+        }
+    }
+}
+.store-container {
+    .panel {
+        width: 100%;
+        position: relative;
+        top: 20px;
+        .card {
+            width: 85%;
+            height: 70px;
+            padding-left: 5%;
+            margin: 10px 5%;
+            border-radius: 10px;
+            background: #FFFFFF;
+            overflow: hidden;
+            .info {
+                float: left;
+                width: 90%;
+                height: 100%;
+                @extend %flexC;
+                align-items: flex-start;
+                .name {
+                    width: 90%;
+                    font-size: 16px;
+                    padding-bottom: 5px;
+                    @extend %spill;
+                }
+                .date {
+                    width: 90%;
+                    font-size: 14px;
+                    color: $fontColor;
+                    .borrow {
+                        float: left;
+                    }
+                    .return {
+                        float: right;
+                    }
+                }
+            }
+            .status {
+                float: right;
+                width: 8%;
+                height: 100%;
+                padding-left: 2%;
+                background: #28D9A5;
+                color: #FFFFFF;
+                font-size: 16px;
+                @extend %flex;
+            }
         }
     }
 }
