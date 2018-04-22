@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import App from './calendar';
+import App from './exam';
 
 const app = new Vue(App);
 app.$mount();

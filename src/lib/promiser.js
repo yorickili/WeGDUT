@@ -1,4 +1,5 @@
-const apis = ['login', 'getUserInfo', 'request', 'showModal', 'navigateTo', 'showActionSheet', 'chooseImage'];
+const apis = ['login', 'getUserInfo', 'request', 'showModal',
+    'navigateTo', 'showActionSheet', 'chooseImage', 'getSystemInfo'];
 
 const promiser = {
     getGlobalData() {

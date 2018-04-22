@@ -95,12 +95,53 @@ page {
     position: fixed;
     width: 50px;
     height: 50px;
-    @extend %flex;
     color: #FFFFFF;
-    font-size: 30px;
-    line-height: 50px;
-    border-radius: 25px;
     background: $mainColor;
+    border-radius: 25px;
+    font-size: 30px;
+    @extend %flex; 
+    div {
+        margin-top: -15px;
+    }
+}
+.picker-container {
+    width: 100%;
+    height: 230px;
+    position: absolute;
+    bottom: 0;
+    .handler {
+        width: 100%;
+        height: 30px;
+        background: #FFFFFF;
+        display: flex;
+        div {
+            width: 50%;
+            height: 30px;
+            padding: 0 10px;
+            line-height: 30px;
+            font-size: 15px;
+        }
+        .confirm {
+            color: #29BB73;
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+    .picker {
+        width: 100%;
+        height: 200px;
+        .indicator {
+            background: rgba(255, 255, 255, 0.5)
+        }
+        .item {
+            width: 100%;
+            height: 30px;
+            font-size: 12px;
+            color: #000000;
+            line-height: 30px;
+            text-align: center;
+        }
+    }
 }
 .lessoner-container {
     width: 80%;
@@ -163,6 +204,25 @@ page {
                 flex: 1;
                 width: 100%;
                 border-top: 1rpx solid rgba(0,0,0,0.1);
+            }
+        }
+        .lesson-wrapper {
+            width: 50px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            .lesson {
+                width: 40px;
+                color: #FFFFFF;
+                border-radius: 10px;
+                padding: 0 5px; 
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
             }
         }
         .course-wrapper {
@@ -305,17 +365,55 @@ page {
         }
     }
 }
-.calendar-container {
-    .zan-cell {
-        .icon {
-            color: $mainColor;
-            font-size: 20px;
-            margin-right: 20px;
-        }
+.exam-container {
+    .panel {
+        width: 100%;
         position: relative;
-        top: 20px;
-        height: 30px;
-        background: #FFFFFF;
+        top: 30px;
+        .card {
+            width: 74%;
+            height: 100px;
+            margin: 0 5% 10px;
+            padding: 10px 8%;
+            background: #FFFFFF;
+            border-radius: 10px;
+            @extend %flexC;
+            align-items: flex-start;
+            div {
+                height: 30px;
+                line-height: 30px;
+                position: relative;
+            }
+            .name {
+                font-size: $normalFontSize;
+                font-weight: bold;
+                letter-spacing: 1px;
+                .label {
+                    width: 5px;
+                    height: 20px;
+                    background: $mainColor;
+                    position: absolute;
+                    top: 6px;
+                    left: -15px;
+                }
+            }
+            .time {
+                font-size: 14px;
+            }
+            .site {
+                width: 100%;
+                font-size: 14px;
+                position: relative;
+                .surplus {
+                    position: absolute;
+                    top: 0;
+                    left: 90%;
+                    span {
+                        font-size: 30px;
+                    }
+                }
+            }
+        }
     }
 }
 .score-container {
@@ -358,19 +456,20 @@ page {
     .chart {
         width: 76%;
         height: 125px;
-        padding: 0 2%;
+        padding-left: 10%;
         @extend %flex;
         justify-content: flex-start;
         background: #FFFFFF;
         border-radius: 10px;
         position: absolute;
-        left: 10%;
+        left: 7%;
         top: 24%;
         .labels {
             width: 40%;
-            height: 100%;
-            padding-left: 10%;
-            font-size: 15px;
+            height: 70%;
+            // margin-top: 10%;
+            padding-left: 25%;
+            font-size: 12px;
             @extend %flexC;
             .label {
                 width: 100%;

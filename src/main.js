@@ -21,7 +21,7 @@ export default {
             'pages/morning/morning',
             'pages/grade/grade',
             'pages/score/score',
-            'pages/calendar/calendar',
+            'pages/exam/exam',
         ],
         window: {
             backgroundColor: '#ECEDF1',

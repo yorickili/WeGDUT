@@ -1,42 +1,46 @@
 <template>
     <movable-area class="container grade-container">
         <div class="cover">
-            <div class="text">{{range[term]}}</div>
+            <div class="text">{{termList[termIndex]}}</div>
             <div class="gpa">{{gpa}}</div>
             <div class="tip">注：此绩点仅供参考（不含选修）</div>
         </div>
         <div class="chart">
             <canvas canvas-id="pie" style="width: 100px; height: 100px;"></canvas>
             <div class="labels">
-                <div class="label" v-for="item in labels" :key="item.index">
+                <div class="label" v-for="(item, index) in labels" :key="index">
                     <div class="circle" :style="{ background: item.color }"></div>
                     <div class="text">{{item.text}}</div>
                 </div>
             </div>
         </div>
         <scroll-view class="list" scroll-y="true">
-            <div class="zan-cell" v-for="item in grade[range[term]]" :key="item.index">
+            <div class="zan-cell" v-for="(item, index) in grade[termList[termIndex]]" :key="index">
                 <div class="zan-cell__bd">{{item.name}}</div>
                 <div class="zan-cell__ft">{{item.score}}</div>
             </div>
         </scroll-view>
-        <picker :range="range" :value="term" @change="changeTerm">
-            <Mover />
-        </picker>
+        <Mover actions="刷新成绩&切换学期" @handler="moverHandler" />
+        <Picker 
+            ref="picker"
+            :list="termList"
+            @change="changeTerm"
+        />
     </movable-area>
 </template>
 
 <script>
     import Mover from '@/components/Mover';
+    import Picker from '@/components/Picker';
     import { jointer } from '@/lib';
 
     export default {
-        components: { Mover },
+        components: { Mover, Picker },
         data() {
             return {
                 grade: {},
-                term: 0,
-                range: ['全部', '大一上', '大一下', '大二上', '大二下', '大三上', '大三下', '大四上', '大四下'],
+                termIndex: 0,
+                termList: ['全部', '大一上', '大一下', '大二上', '大二下', '大三上', '大三下', '大四上', '大四下'],
                 labels: [
                     { color: '#F75C2F', text: '90 - 100' },
                     { color: '#A0D8EF', text: '80 - 89' },
@@ -48,7 +52,7 @@
         },
         computed: {
             gpa() {
-                const list = this.grade[this.range[this.term]];
+                const list = this.grade[this.termList[this.termIndex]];
                 let gpa = 0;
                 let num = 0;
                 if (list) {
@@ -62,7 +66,7 @@
                 return num > 0 ? (gpa / num).toFixed(3) : '暂无成绩';
             },
             percent() {
-                const list = this.grade[this.range[this.term]];
+                const list = this.grade[this.termList[this.termIndex]];
                 let percent = [0, 0, 0, 0, 0];
                 if (list) {
                     list.forEach(($item) => {
@@ -91,20 +95,29 @@
                         }
                     });
                 }
-                const pie = wx.createCanvasContext('pie');
-                this.drawPie(pie, percent);
                 return percent;
             },
         },
         async beforeMount() {
-            const res = await jointer.getGrade();
-            this.grade = res;
+            await this.setGrade();
+            this.drawPie();
         },
         methods: {
-            changeTerm(e) {
-                this.term = e.target.value;
+            async setGrade(isRefresh) {
+                if (wx.getStorageSync('grade') && !isRefresh) {
+                    this.grade = wx.getStorageSync('grade');
+                } else {
+                    this.grade = await jointer.getGrade();
+                    wx.setStorageSync('grade', this.grade);
+                }
             },
-            drawPie(pencil, percent) {
+            changeTerm(value) {
+                this.termIndex = value[0];
+                this.drawPie();
+            },
+            drawPie() {
+                const pencil = wx.createCanvasContext('pie');
+                const percent = [...this.percent];
                 const drawSector = (start, end, color) => {
                     pencil.beginPath();
                     pencil.moveTo(50, 50);
@@ -119,6 +132,13 @@
                 drawSector(percent[2], percent[3], '#38B48B');
                 drawSector(percent[3], 1, '#84A2D4');
                 pencil.draw();
+            },
+            moverHandler(index) {
+                switch (index) {
+                    case 0: this.setGrade(true); break;
+                    case 1: this.$refs.picker.show(); break;
+                    default: break;
+                }
             },
         },
     };

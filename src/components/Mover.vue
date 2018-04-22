@@ -1,6 +1,13 @@
 <template>
-    <movable-view class="mover-container" direction="all" inertia="true" @click="showActions">
-        +
+    <movable-view
+        class="mover-container"
+        direction="all"
+        inertia="true"
+        :x="x"
+        :y="y"
+        @click="showActions"
+    >
+        <div>...</div>
     </movable-view>
 </template>
 
@@ -10,6 +17,17 @@
     export default {
         props: {
             actions: String,
+        },
+        data() {
+            return {
+                x: 0,
+                y: 0,
+            };
+        },
+        async created() {
+            const { screenHeight, screenWidth } = await promiser.getSystemInfo();
+            this.x = screenWidth - 70;
+            this.y = screenHeight - 180;
         },
         methods: {
             async showActions() {

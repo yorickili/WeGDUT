@@ -15,7 +15,12 @@
             </div>
         </div>
         <div v-show="visible.opinion">
-            <textarea class="opinion" v-model="opinion" placeholder="请留下您的宝贵意见~" placeholder-style="font-size: 15px;" />
+            <textarea
+                class="opinion"
+                v-model="opinion"
+                placeholder="请留下您的宝贵意见~"
+                placeholder-style="font-size: 15px;"
+            />
             <Button @click="sendOpinion()" />
         </div>
     </div>
@@ -42,7 +47,7 @@
                 });
             },
             async sendOpinion() {
-                if (this.opinion.length > 8) {
+                if (this.opinion.length > 4) {
                     await promiser.showModal({
                         title: '提示',
                         content: '感谢您的反馈~',

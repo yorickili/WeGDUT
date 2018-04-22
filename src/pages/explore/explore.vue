@@ -1,7 +1,7 @@
 <template>
     <div class="container explore-container">
         <div class="zan-panel" style="margin-top: 0;">
-            <div class="zan-cell zan-cell--access" @click="jump('/pages/calendar/calendar')">
+            <div class="zan-cell zan-cell--access" @click="jump('/pages/exam/exam')">
                 <img class="icon" src="/static/icon/考试时间.png"/>
                 <div class="zan-cell__bd">考试时间</div>
                 <div class="zan-cell__ft"></div>

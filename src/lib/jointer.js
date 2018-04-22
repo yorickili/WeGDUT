@@ -81,4 +81,12 @@ const getGrade = () => {
         }
     });
 };
-export default { getProofUrl, getToken, login, getCalendar, getCourse, getGrade };
+
+const getExam = () => {
+    return new Promise(async (resolve) => {
+        const res = await request({ url: '/jwgl/exam', method: 'GET' });
+        resolve(res);
+    });
+};
+
+export default { getProofUrl, getToken, login, getCalendar, getCourse, getGrade, getExam };
