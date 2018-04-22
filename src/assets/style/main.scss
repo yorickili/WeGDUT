@@ -468,7 +468,6 @@ page {
         .labels {
             width: 40%;
             height: 70%;
-            // margin-top: 10%;
             padding-left: 25%;
             font-size: 12px;
             @extend %flexC;
@@ -614,6 +613,45 @@ page {
                 color: #FFFFFF;
                 font-size: 16px;
                 @extend %flex;
+            }
+        }
+    }
+}
+.news-container {
+    .panel {
+        width: 100%;
+        position: relative;
+        top: 10px;
+        .card{
+            width: 80%;
+            padding: 10px 5%;
+            margin: 10px 5%;
+            border-radius: 10px;
+            background: #FFFFFF;
+            @extend %flexC;
+            .name{
+                width: 100%;
+                color: #576B95;
+                padding: 5px 10px;
+                font-size: 18px;
+                border-bottom: 1px solid #E1E1E1;
+                position: relative;
+                @extend %spill;
+                .label {
+                    width: 5px;
+                    height: 20px;
+                    background: $mainColor;
+                    position: absolute;
+                    top: 6px;
+                    left: -1px;
+                }
+            }
+            .info{
+                width: 100%;
+                padding: 5px 10px;
+                font-size: 15px;
+                line-height: 25px;
+                color: $fontColor;
             }
         }
     }

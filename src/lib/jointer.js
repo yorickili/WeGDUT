@@ -140,6 +140,28 @@ const getStore = () => {
     });
 };
 
+const getNews = () => {
+    return new Promise(async (resolve) => {
+        const res = await request({
+            method: 'GET',
+            url: '/gdutnews',
+        });
+        const list = res.news_ifw_Accs_GetList_list1;
+        const whiteList = ['rd', 'type', 'name', 'unit', 'time'];
+        list.forEach((item, i) => {
+            list[i].rd = item.NewsRd;
+            list[i].type = item.Colu;
+            list[i].name = item.Title;
+            list[i].unit = item.Unit;
+            list[i].time = item.RelDate;
+            Object.keys(item).forEach((key) => {
+                if (whiteList.indexOf(key) === -1) delete list[i][key];
+            });
+        });
+        resolve(list);
+    });
+};
+
 export default {
     getProofUrl,
     getToken,
@@ -150,4 +172,5 @@ export default {
     getExam,
     searchBook,
     getStore,
+    getNews,
 };
