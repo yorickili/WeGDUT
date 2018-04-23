@@ -1,7 +1,12 @@
 <template>
     <div class="container news-container">
         <div class="panel">
-            <div class="card" v-for="(item, index) in list" :key="index">
+            <div
+                class="card"
+                v-for="(item, index) in list"
+                :key="index"
+                @click="lookNotice(item)"
+            >
                 <div class="name">
                     <div class="label" />
                     {{item.name}}
@@ -24,12 +29,12 @@
                 list: [],
             };
         },
-        beforeMount() {
-            this.setList();
+        async beforeMount() {
+            this.list = await jointer.getNews();
         },
         methods: {
-            async setList() {
-                this.list = await jointer.getNews();
+            lookNotice(item) {
+                wx.navigateTo({ url: `/pages/notice/notice?rd=${item.rd}&name=${item.name}&type=${item.type}` });
             },
         },
     };

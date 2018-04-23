@@ -162,6 +162,17 @@ const getNews = () => {
     });
 };
 
+const getNotice = (rd) => {
+    return new Promise(async (resolve) => {
+        const res = await request({
+            method: 'GET',
+            url: '/gdutnews/detail',
+            data: { NewsRd: rd },
+        });
+        resolve(res);
+    });
+};
+
 export default {
     getProofUrl,
     getToken,
@@ -173,4 +184,5 @@ export default {
     searchBook,
     getStore,
     getNews,
+    getNotice,
 };
