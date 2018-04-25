@@ -1,5 +1,5 @@
 <template>
-    <div class="container notice-container" v-html="article" />
+    <rich-text class="container notice-container" :nodes="article" />
 </template>
 
 <script>
@@ -18,5 +18,8 @@
 </script>
 
 <style lang="scss">
-    
+    .notice-container {
+        width: 300px;
+        height: 400px;
+    }
 </style>
