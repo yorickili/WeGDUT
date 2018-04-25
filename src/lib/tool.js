@@ -50,8 +50,8 @@ const getLapseTime = ($stamp, $now = Date.now()) => {
     const oneMinute = 60;
     const before = Math.floor(($now - $stamp) / 1000);
     const date = new Date($stamp).toISOString().slice(0, 10);
-    if ($stamp > $now) return date;
-    if (before < oneMinute) return `${before}秒前`;
+    if (before < 0) return date;
+    else if (before < oneMinute) return `${before}秒前`;
     else if (before < oneHour) return `${Math.floor(before / oneMinute)}分钟前`;
     else if (before < oneDay) return `${Math.floor(before / oneHour)}小时前`;
     else if (before < oneMonth) return `${Math.floor(before / oneDay)}天前`;
