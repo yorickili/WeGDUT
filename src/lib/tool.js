@@ -28,4 +28,19 @@ const quickSort = (arr, proto) => {
     return quickSort(left, proto).concat([pivot], quickSort(right, proto));
 };
 
-export default { getRes, getWeekday, quickSort };
+const getWeeks = ($firstday, $length) => {
+    const firstDayStamp = new Date($firstday).getTime();
+    const oneDayStamp = 86400000;
+    const weeks = [];
+    for (let i = 0; i < $length; i += 1) {
+        const week = [];
+        for (let m = 0; m < 7; m += 1) {
+            const date = new Date(firstDayStamp + (((7 * i) + m) * oneDayStamp));
+            week.push(date.toISOString().slice(5, 10));
+        }
+        weeks.push(week);
+    }
+    return weeks;
+};
+
+export default { getRes, getWeekday, getWeeks, quickSort };
