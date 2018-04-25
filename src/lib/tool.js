@@ -28,19 +28,32 @@ const quickSort = (arr, proto) => {
     return quickSort(left, proto).concat([pivot], quickSort(right, proto));
 };
 
-const getWeeks = ($firstday, $length) => {
+const getCalendar = ($firstday, $length) => {
     const firstDayStamp = new Date($firstday).getTime();
     const oneDayStamp = 86400000;
-    const weeks = [];
+    const Calendar = [];
     for (let i = 0; i < $length; i += 1) {
         const week = [];
         for (let m = 0; m < 7; m += 1) {
             const date = new Date(firstDayStamp + (((7 * i) + m) * oneDayStamp));
             week.push(date.toISOString().slice(5, 10));
         }
-        weeks.push(week);
+        Calendar.push(week);
     }
-    return weeks;
+    return Calendar;
 };
 
-export default { getRes, getWeekday, getWeeks, quickSort };
+const getLapseTime = ($stamp, $now = Date.now()) => {
+    const oneMonth = 2592000;
+    const oneDay = 86400;
+    const oneHour = 3600;
+    const oneMinute = 60;
+    const before = Math.floor(($now - $stamp) / 1000);
+    if (before < oneMinute) return `${before}秒前`;
+    else if (before < oneHour) return `${Math.floor(before / oneMinute)}分钟前`;
+    else if (before < oneDay) return `${Math.floor(before / oneHour)}小时前`;
+    else if (before < oneMonth) return `${Math.floor(before / oneDay)}天前`;
+    return new Date($stamp).toISOString().slice(0, 10);
+};
+
+export default { getRes, getWeekday, getCalendar, getLapseTime, quickSort };
