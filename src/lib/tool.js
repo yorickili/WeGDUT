@@ -31,16 +31,16 @@ const quickSort = (arr, proto) => {
 const getCalendar = ($firstday, $length) => {
     const firstDayStamp = new Date($firstday).getTime();
     const oneDayStamp = 86400000;
-    const Calendar = [];
+    const calendar = [];
     for (let i = 0; i < $length; i += 1) {
         const week = [];
         for (let m = 0; m < 7; m += 1) {
             const date = new Date(firstDayStamp + (((7 * i) + m) * oneDayStamp));
             week.push(date.toISOString().slice(5, 10));
         }
-        Calendar.push(week);
+        calendar.push(week);
     }
-    return Calendar;
+    return calendar;
 };
 
 const getLapseTime = ($stamp, $now = Date.now()) => {
