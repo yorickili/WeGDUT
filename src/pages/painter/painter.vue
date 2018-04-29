@@ -5,13 +5,17 @@
             <div v-if="!img" @click="chooseImg">+</div>
             <img v-else :src="img" mode="aspectFit" @click="previewImg" />
         </div>
-        <Button :disabled="!this.text" stylus="width: 80%; margin: 20px 10%;">确定</Button>
+        <Button
+            :disabled="!this.text"
+            stylus="width: 80%; margin: 20px 10%;"
+            @click="sendCard"
+        >确定</Button>
     </div>
 </template>
 
 <script>
     import Button from '@/components/Button';
-    import { promiser } from '@/lib';
+    import { promiser, jointer } from '@/lib';
 
     export default {
         components: { Button },
@@ -30,7 +34,11 @@
                 wx.previewImage({ urls: this.img });
             },
             async sendCard() {
-                console.log(1);
+                const res = await jointer.sendCard({
+                    content: this.text,
+                    imgUrl: this.img,
+                });
+                console.log(res);
             },
         },
     };

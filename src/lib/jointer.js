@@ -173,6 +173,29 @@ const getNotice = (rd) => {
     });
 };
 
+const getCards = () => {
+    return new Promise(async (resolve) => {
+        const res = await request({
+            url: '/gdutwall/getAllPost',
+            method: 'GET',
+            data: {
+                currentPage: 0,
+            },
+        });
+        resolve(res);
+    });
+};
+
+const sendCard = (data) => {
+    return new Promise(async (resolve) => {
+        const res = await request({
+            url: '/gdutWall/send',
+            data,
+        });
+        resolve(res);
+    });
+};
+
 export default {
     getProofUrl,
     getToken,
@@ -185,4 +208,6 @@ export default {
     getStore,
     getNews,
     getNotice,
+    getCards,
+    sendCard,
 };

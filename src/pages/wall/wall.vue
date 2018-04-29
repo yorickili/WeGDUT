@@ -31,7 +31,7 @@
 <script>
     import Card from '@/components/Card';
     import Mover from '@/components/Mover';
-    import { promiser } from '@/lib';
+    import { promiser, jointer } from '@/lib';
 
     export default {
         components: { Card, Mover },
@@ -47,6 +47,7 @@
             };
         },
         async created() {
+            console.log(await jointer.getCards());
             await promiser.getGlobalData();
             this.avatar = global.data.avatarUrl;
             this.nickname = global.data.nickName;
