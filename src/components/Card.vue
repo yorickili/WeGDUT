@@ -1,11 +1,11 @@
 <template>
-    <div class="card-container" :style="{ scaleStyle }">
-        <div class="main"  @click="shrink">
+    <div class="card-container">
+        <div class="main"  @click="go2Origami">
             <div class="header">
                 <img :src="avatar" />
                 <div>
                     <span>{{nickname}}</span>
-                    <span class="device">{{time}}  来自{{device}}</span>
+                    <span class="device">{{time}} &nbsp;&nbsp;&nbsp; 来自 {{device}}</span>
                 </div>
             </div>
             <div class="body">
@@ -16,30 +16,32 @@
         <div class="footer">
             <div @click="comment">
                 <img :src="icon.comment" />
-                <span>{{commentsCount}}</span>
+                <span>{{comments.length}}</span>
             </div>
             <div @click="like">
                 <img :src="icon.like" />
-                <span>{{likeCount}}</span>
+                <span>{{likes.length}}</span>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import { promiser } from '@/lib';
+    import { jointer } from '@/lib';
 
     export default {
         props: {
             type: String,
+            id: String,
             avatar: String,
             nickname: String,
             time: String,
             device: String,
             text: String,
             img: String,
-            likeCount: Number,
-            commentsCount: Number,
+            likes: Array,
+            comments: Array,
+            commentHandler: Function,
         },
         data() {
             return {
@@ -47,38 +49,29 @@
                     comment: '/static/icon/评论1.png',
                     like: '/static/icon/点赞1.png',
                 },
-                scale: 1,
             };
-        },
-        computed: {
-            scaleStyle() {
-                return `transform: scale(${this.scale}, ${this.scale})`;
-            },
         },
         methods: {
             previewImage() {
                 wx.previewImage({ urls: [this.img] });
             },
             comment() {
-                this.icon.comment = '/static/icon/评论2.png';
-                this.commentsCount += 1;
+                if (this.type === 'wall') this.go2Origami();
+                else this.$emit('commentHandler');
+                // this.icon.comment = '/static/icon/评论2.png';
             },
-            like() {
-                this.icon.like = '/static/icon/点赞2.png';
-                this.likeCount += 1;
+            async like() {
+                const code = await jointer.like({ id: this.id });
+                switch (code) {
+                    case 200: this.icon.like = '/static/icon/点赞2.png'; break;
+                    case 500: this.icon.like = '/static/icon/点赞1.png'; break;
+                    default: break;
+                }
             },
-            shrink() {
-                if (this.type === 'origami') return null;
-                const timer = setInterval(async () => {
-                    if (this.scale > 0.92) {
-                        this.scale -= 0.008;
-                    } else {
-                        clearInterval(timer);
-                        await promiser.navigateTo({ url: `/pages/origami/origami?detail=${JSON.stringify(this.$props)}` });
-                        this.scale = 1;
-                    }
-                }, 10);
-                return '';
+            go2Origami() {
+                if (this.type === 'wall') {
+                    wx.navigateTo({ url: `/pages/origami/origami?detail=${JSON.stringify(this.$props)}` });
+                }
             },
         },
     };

@@ -3,7 +3,7 @@
         <div class="painter">
             <textarea v-model="text" placeholder="请输入卡片内容~" maxlength="200" />
             <div v-if="!img" @click="chooseImg">+</div>
-            <img v-else :src="img" mode="aspectFit" @click="previewImg" />
+            <img v-else :src="img" mode="aspectFit" @click="chooseImg" />
         </div>
         <Button
             :disabled="!this.text"
@@ -34,11 +34,12 @@
                 wx.previewImage({ urls: this.img });
             },
             async sendCard() {
-                const res = await jointer.sendCard({
+                const { model } = await promiser.getSystemInfo();
+                await jointer.sendCard({
                     content: this.text,
                     imgUrl: this.img,
+                    phone: model,
                 });
-                console.log(res);
             },
         },
     };

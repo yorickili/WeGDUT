@@ -6,7 +6,7 @@ const promiser = {
         return new Promise((resolve) => {
             const timer = setInterval(() => {
                 if (global.data) {
-                    resolve();
+                    resolve(global.data);
                     clearInterval(timer);
                 }
             }, 100);

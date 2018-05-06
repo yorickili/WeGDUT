@@ -1,57 +1,82 @@
 <template>
     <div class="container origami-container">
         <Card
-            :type="type"
+            type="origami"
             :avatar="avatar"
             :nickname="nickname"
+            :time="time"
             :device="device"
             :text="text"
             :img="img"
-            :likeCount="likeCount"
-            :commentsCount="commentsCount" />
+            :likes="likes"
+            :comments="comments"
+            @commentHandler="visible.commentHandler = !visible.commentHandler"
+        />
         <div class="comments">
-            <Comment
-                v-for="comment in comments"
-                :key="comment.index"
-                :avatar="comment.avatar"
-                :nickname="comment.nickname"
-                :text="comment.text" />
+            <div class="comment-container" v-for="(item, index) in comments" :key="index">
+                <img class="avatar" :src="item.avatar" />
+                <div class="comment">
+                    <span>{{item.nickname}}</span>
+                    <div class="text">{{item.text}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="comment-handler" v-show="visible.commentHandler">
+            <input
+                type="text"
+                placeholder="写评论…"
+                v-model="comment"
+                @confirm="sendComment"
+            />
+            <div class="anon">
+                <div>是否匿名</div>
+                <switch @change="anon = !anon" />
+            </div>      
         </div>
     </div>
 </template>
 
 <script>
     import Card from '@/components/Card';
-    import Comment from '@/components/Comment';
+    import { promiser, jointer } from '@/lib';
 
     export default {
-        components: { Card, Comment },
+        components: { Card },
         data() {
-            const comment = {
-                avatar: 'https://wx.qlogo.cn/mmopen/vi_32/T3L9co6vFq8hnljV9YJXaKfViaa2eOy70y7o4TRle5Dxw1wa6ib6en3KOD06VZQrKnGcwH8Jsficib5xIWFV50NlNA/0',
-                nickname: 'test',
-                text: '123',
-            };
             return {
-                type: 'origami',
+                id: '',
                 avatar: '',
                 nickname: '',
+                time: '',
                 device: '',
                 text: '',
                 img: '',
-                likeCount: '',
-                commentsCount: '',
-                comments: [comment, comment, comment, comment, comment, comment,
-                    comment, comment, comment, comment, comment, comment],
+                likes: [],
+                comments: [],
+                visible: {
+                    commentHandler: false,
+                },
+                comment: '',
+                anon: false,
             };
         },
         beforeMount() {
             if (this.$root.$mp.query.detail) {
                 const detail = JSON.parse(this.$root.$mp.query.detail);
-                ['avatar', 'nickname', 'device', 'text', 'img', 'likeCount', 'commentsCount'].forEach((attr) => {
+                ['id', 'avatar', 'nickname', 'time', 'device', 'text', 'img', 'likes', 'comments'].forEach((attr) => {
                     this[attr] = detail[attr];
                 });
+                this.visible.commentHandler = false;
+                this.comment = '';
+                this.anon = false;
             }
+        },
+        methods: {
+            async sendComment() {
+                const { avatar, nickname } = await promiser.getGlobalData();
+                this.comments.push({ avatar, nickname, text: this.comment });
+                jointer.sendComment({ content: this.comment, post_id: this.id, to_id: '5a698425869d0060e7f76db2' });
+            },
         },
     };
 </script>

@@ -16,22 +16,24 @@
                 v-for="card in cards"
                 :key="card.index"
                 type="wall"
+                :id="card.id"
                 :avatar="card.avatar"
                 :nickname="card.nickname"
                 :device="card.device"
+                :time = "card.time"
                 :text="card.text"
                 :img="card.img"
-                :likeCount="card.likeCount"
-                :commentsCount="card.commentsCount" />
+                :likes="card.likes"
+                :comments="card.comments" />
         </div>
-        <Mover actions="贴卡片&我的卡片" @handler="moverHandler" />
+        <Mover :actions="actions" @handler="moverHandler" />
     </movable-area>
 </template>
 
 <script>
     import Card from '@/components/Card';
     import Mover from '@/components/Mover';
-    import { promiser, jointer } from '@/lib';
+    import { jointer } from '@/lib';
 
     export default {
         components: { Card, Mover },
@@ -44,40 +46,36 @@
                 avatar: '',
                 nickname: '',
                 cards: [],
+                isMy: false,
             };
         },
-        async created() {
-            console.log(await jointer.getCards());
-            await promiser.getGlobalData();
-            this.avatar = global.data.avatarUrl;
-            this.nickname = global.data.nickName;
-            const card = {
-                avatar: this.avatar,
-                nickname: this.nickname,
-                device: 'iPhone X',
-                text: '测试内容',
-                img: 'https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/static/protocol/https/home/img/qrcode/zbios_x2_9d645d9.png',
-                likeCount: 20,
-                commentsCount: 20,
-            };
-            const card1 = {
-                avatar: this.avatar,
-                nickname: this.nickname,
-                device: 'iPhone X',
-                text: '测试内容',
-                img: '',
-                likeCount: 20,
-                commentsCount: 20,
-            };
-            this.cards = [card, card, card1, card1, card];
+        computed: {
+            actions() {
+                return `贴卡片&${this.isMy ? '全部' : '我的'}卡片`;
+            },
+        },
+        beforeMount() {
+            this.getCards();
         },
         methods: {
+            getCards(isMy) {
+                this.isMy = isMy;
+                return new Promise(async (resolve) => {
+                    this.cards = await jointer.getCards(isMy);
+                    resolve();
+                });
+            },
             moverHandler(index) {
                 switch (index) {
-                    case 0: promiser.navigateTo({ url: '/pages/painter/painter' }); break;
+                    case 0: wx.navigateTo({ url: '/pages/painter/painter' }); break;
+                    case 1: this.getCards(!this.isMy); break;
                     default: break;
                 }
             },
+        },
+        async onPullDownRefresh() {
+            await this.getCards(this.isMy);
+            wx.stopPullDownRefresh();
         },
     };
 </script>

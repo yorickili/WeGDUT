@@ -29,8 +29,8 @@ page {
 }
 .card-container {
     width: 90%;
-    margin: 10px 5%;
-    border-radius: 25px;
+    margin: 0 5% 10px;
+    border-radius: 10px;
     background: #FFFFFF;
     overflow: hidden;
     .main {
@@ -305,39 +305,66 @@ page {
         background: #FFFFFF;
     }
 }
-.comment-container {
-    width: 90%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 10px 0;
-    margin: 0 5%;
-    border-top: 1px solid #ECEDF1;
-    img {
-        width: 30px;
-        height: 30px;
-    }
-    .comment {
-        flex: 1;
-        margin: 0 8px;
-        font-size: 10px;
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        flex-direction: column;
-        .text {
-            font-size: 15px;
-            word-break: break-all; 
-        }
-    }
-}
 .origami-container {
+    height: 98%;
+    position: relative;
+    top: 2%;
     .comments {
         width: 90%;
         background: #FFFFFF;
         margin: 10px 5%;
-        border-radius: 25px;
-        padding: 20px 0 0;
+        border-radius: 10px;
+        padding: 0;
+        .comment-container {
+            width: 90%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 10px 0;
+            margin: 0 5%;
+            border-top: 1px solid #ECEDF1;
+            img {
+                width: 30px;
+                height: 30px;
+            }
+            .comment {
+                flex: 1;
+                margin: 0 8px;
+                font-size: 10px;
+                display: flex;
+                align-items: flex-start;
+                justify-content: flex-start;
+                flex-direction: column;
+                .text {
+                    font-size: 15px;
+                    word-break: break-all; 
+                }
+            }
+        }
+    }
+    .comment-handler{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: #353535;
+        font-size: 12px;
+        background: #FFFFFF;
+        border-top: 1px solid #CCCCCC;
+        input{
+            padding: 0 7px;
+            border-bottom: 1px solid #F1F1F1;
+            height: 40px;
+        }
+        .anon{
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 7px;
+            switch {
+                margin-left: 20px;
+            }
+        }
     }
 }
 .painter-container {

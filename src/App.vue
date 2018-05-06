@@ -7,9 +7,10 @@
             try {
                 const { code } = await promiser.login();
                 const { nickName, avatarUrl } = (await promiser.getUserInfo()).userInfo;
-                global.data = {};
-                global.data.nickName = nickName;
-                global.data.avatarUrl = avatarUrl;
+                global.data = {
+                    nickname: nickName || '',
+                    avatar: avatarUrl || '',
+                };
                 jointer.getToken({ code, nickName, avatarUrl });
             } catch (e) {
                 console.error(e);

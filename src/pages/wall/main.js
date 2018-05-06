@@ -6,6 +6,6 @@ app.$mount();
 
 export default {
     config: {
-        disableScroll: false,
+        enablePullDownRefresh: true,
     },
 };

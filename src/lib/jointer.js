@@ -173,26 +173,74 @@ const getNotice = (rd) => {
     });
 };
 
-const getCards = () => {
+const getCards = (isMy = false) => {
     return new Promise(async (resolve) => {
         const res = await request({
-            url: '/gdutwall/getAllPost',
+            url: `/gdutwall/get${isMy ? 'My' : 'All'}Post`,
             method: 'GET',
             data: {
                 currentPage: 0,
             },
         });
-        resolve(res);
+        const cards = res.data;
+        cards.forEach((item, i) => {
+            /* eslint-disable no-underscore-dangle */
+            cards[i].id = item._id;
+            cards[i].avatar = item.user_id.avatarUrl;
+            cards[i].nickname = item.user_id.nickname;
+            cards[i].time = '1分钟前';
+            // cards[i].time = tool.getLapseTime(new Date(item.createdAt.replace('-', '/')));
+            cards[i].device = item.phone || '未知设备';
+            cards[i].text = item.content;
+            cards[i].img = item.imgUrl;
+            cards[i].likes = item.likes;
+            item.comments.forEach((comment, n) => {
+                cards[i].comments[n].avatar = comment.from_id.avatarUrl;
+                cards[i].comments[n].nickname = comment.from_id.nickName;
+                cards[i].comments[n].text = comment.content;
+            });
+        });
+        resolve(cards);
     });
 };
 
 const sendCard = (data) => {
-    return new Promise(async (resolve) => {
+    return new Promise(async () => {
         const res = await request({
             url: '/gdutWall/send',
             data,
         });
-        resolve(res);
+        console.log(res);
+        if (res.data.code === 200) {
+            console.log(200);
+        }
+    });
+};
+
+const sendComment = (data) => {
+    return new Promise(async () => {
+        const res = await request({
+            url: '/gdutWall/comment',
+            data,
+        });
+        console.log(res);
+        if (res.data.code === 200) {
+            console.log(200);
+        }
+    });
+};
+
+const like = (data) => {
+    return new Promise(async (resolve) => {
+        const res = await request({
+            url: '/gdutWall/like',
+            data,
+        });
+        switch (res.code) {
+            case 200: resolve(res.code); break;
+            case 500: resolve(res.code); break;
+            default: break;
+        }
     });
 };
 
@@ -210,4 +258,6 @@ export default {
     getNotice,
     getCards,
     sendCard,
+    sendComment,
+    like,
 };
