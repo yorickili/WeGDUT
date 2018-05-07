@@ -4,13 +4,24 @@
             <div class="weui-search-bar__form">
                 <div class="weui-search-bar__box">
                     <icon class="weui-icon-search_in-box" type="search" size="14" />
-                    <input type="text" class="weui-search-bar__input" placeholder="搜索" v-model="word" @confirm="search" />
+                    <input
+                        type="text"
+                        class="weui-search-bar__input"
+                        placeholder="搜索"
+                        v-model="word"
+                        @confirm="search"
+                    />
                     <div class="weui-icon-clear" @click="word = ''"><icon type="clear" size="14" /></div>
                 </div>
             </div>
         </div>
         <div class="panel">
-            <div class="card" v-for="item in list" :key="item.index">
+            <div
+                class="card"
+                v-for="(item, index) in list"
+                :key="index"
+                @click="previewBook(item)"
+            >
                 <div class="icon">
                     <div class="zan-icon zan-icon-goods-collect" />
                 </div>
@@ -49,10 +60,13 @@
                     default: break;
                 }
             },
+            previewBook(item) {
+                wx.navigateTo({ url: `/pages/book/book?book=${JSON.stringify(item)}` });
+            },
         },
     };
 </script>
 
 <style lang="scss">
-    
+
 </style>
