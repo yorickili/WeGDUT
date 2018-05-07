@@ -131,6 +131,46 @@ const searchBook = (keyword) => {
     });
 };
 
+const getBook = (data) => {
+    return new Promise(async (resolve) => {
+        const res = await request({
+            url: '/gdutlibrary/detail',
+            method: 'GET',
+            data,
+        });
+        const book = {};
+        const setInfo = ($info) => {
+            const str = tool.btoa($info);
+            book.img = str.match(/<center[^>]*>[\s\S]*?<\/[^>]*center>/gi)[0].slice(18, -11);
+            const arr = str.match(/<td[^>]*>[\s\S]*?<\/[^>]*td>/gi).map((item) => {
+                return item.slice(4, -5);
+            });
+            arr.forEach((item, i) => {
+                switch (item) {
+                    case '价格': book.price = arr[i + 1]; break;
+                    case '出版社': book.press = arr[i + 1]; break;
+                    case 'ISBN': book.isbn = arr[i + 1]; break;
+                    default: break;
+                }
+            });
+        };
+        const setIntro = ($intro) => {
+            book.intro = $intro;
+        };
+        const setCatalog = ($catalog) => {
+            book.catalog = tool.btoa($catalog).slice(14).replace(/&.*?;/g, '');
+        };
+        const setSite = ($site) => {
+            book.site = $site;
+        };
+        setInfo(res.DetailInfo);
+        setIntro(res.DetailIntro);
+        setCatalog(res.DetailContents);
+        setSite(res.DetailCollection);
+        resolve(book);
+    });
+};
+
 const getStore = () => {
     return new Promise(async (resolve) => {
         resolve();
@@ -253,6 +293,7 @@ export default {
     getGrade,
     getExam,
     searchBook,
+    getBook,
     getStore,
     getNews,
     getNotice,

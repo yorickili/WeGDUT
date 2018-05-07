@@ -12,7 +12,9 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "mpvue": "^1.0.1"
+    "licia": "^0.12.0",
+    "mpvue": "^1.0.1",
+    "mpvue-zanui": "^1.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

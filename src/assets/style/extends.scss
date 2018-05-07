@@ -5,7 +5,7 @@
 %flex {
     align-items: center;
     justify-content: center;
-    display: flex,
+    display: flex;
 }
 %flexC {
     align-items: center;
@@ -15,6 +15,6 @@
 }
 %spill {
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }

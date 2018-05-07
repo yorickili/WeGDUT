@@ -1,6 +1,7 @@
 <script>
     import { promiser, jointer } from '@/lib';
     import '@/assets/style/main.scss';
+    import '@/assets/style/zanui.scss';
     
     export default {
         async created() {

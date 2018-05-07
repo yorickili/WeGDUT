@@ -594,6 +594,103 @@ page {
         }
     }
 }
+.book-container {
+    .zan-tab__bd--fixed {
+        height: 50px;
+    }
+    .zan-tab__bd--scroll .zan-tab__item {
+        min-width: 25%;
+    }
+    .zan-tab__item--selected .zan-tab__title {
+        color: #29BB73;
+        border-bottom:4rpx solid #29BB73;
+    }
+    swiper{
+        width: 100%;
+        height: 90%;
+        position: absolute;
+        top: 50px;
+        .info-wrapper {
+            .img{
+                width: 90%;
+                height: 300px;
+                margin: 15px 5% 30px;
+                border-radius: 10px;
+                background: #FFFFFF;
+                align-items: center;
+                justify-content: center;
+                display: flex;
+            }
+            .info {
+                width: 80%;
+                height: 150px;
+                margin: 0 5% 10px;
+                padding: 15px 5%;
+                border-radius: 10px;
+                background: #FFFFFF;
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                font-size: 15px;
+                color: #888888;
+                div {
+                    width: 100%;
+                    @extend %spill;
+                }
+                .title {
+                    width: 80%;
+                    height: 35px;
+                    margin: 0 10% 10px;
+                    color: #353535;
+                    font-size: 25px;
+                }
+            }
+        }
+        .intro {
+            width: 80%;
+            height: 480px;
+            margin: 15px 5%;
+            padding: 15px 5%;
+            border-radius: 10px;
+            background: #FFFFFF;
+            color: #353535;
+            font-size: 15px;
+        }
+        .catalog {
+            width: 80%;
+            height: 480px;
+            margin: 15px 5%;
+            padding: 15px 5%;
+            border-radius: 10px;
+            background: #FFFFFF;
+            color: #353535;
+            font-size: 15px;
+        }
+        .site {
+            width: 700rpx;
+            margin: 50rpx auto;
+            padding: 10rpx;
+            border-radius: 20rpx;
+            background: #FFFFFF;
+            color: #353535;
+            font-size: 25rpx;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .library {
+            flex: 4;
+        }
+        .coordinate {
+            flex: 3;
+            text-align: center;
+        }
+        .status {
+            flex: 3;
+            text-align: right;
+        }
+    }
+}
 .store-container {
     .panel {
         width: 100%;
