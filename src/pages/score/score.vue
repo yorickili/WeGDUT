@@ -19,7 +19,7 @@
             </div>
         </div>
         <Button :disabled="!(name && id && proof)" @click="query" />
-        <div class="list" v-if="isSuccess">
+        <div class="list" v-if="visible.list">
             <div class="zan-cell" v-for="item in list" :key="item.index">
                 <div class="icon zan-cell__icon zan-icon zan-icon-description" />
                 <div class="zan-cell__bd">{{item.subject}}</div>
@@ -40,13 +40,19 @@
                 id: '',
                 proof: '',
                 proofUrl: '',
-                isSuccess: false,
-                list: [{ subject: '听力', score: '100' }, { subject: '阅读', score: '150' }],
+                visible: { list: false },
+                list: [],
             };
         },
         methods: {
             refreshProofUrl() {},
-            query() {},
+            query() {
+                wx.showModal({
+                    title: '提示',
+                    content: '暂未开放！',
+                    showCancel: false,
+                });
+            },
         },
     };
 </script>
@@ -54,6 +60,7 @@
 <style lang="scss">
     .list {
         width: 100%;
+        margin-top: 20px;
         .zan-cell {
             .icon {
                 color: #29BB73;

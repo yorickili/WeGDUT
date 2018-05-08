@@ -1,5 +1,7 @@
 <template>
-    <rich-text class="container notice-container" :nodes="article" />
+    <div class="container notice-container">
+        <div v-html="article"></div>
+    </div>
 </template>
 
 <script>
@@ -12,14 +14,19 @@
             };
         },
         async beforeMount() {
-            this.article = await jointer.getNotice(this.$mp.query.rd);
+            this.article = (await jointer.getNotice(this.$mp.query.rd)).replace(/<a.*?<\/a>/g, '');
+            console.log(this.article);
         },
     };
 </script>
 
 <style lang="scss">
     .notice-container {
-        width: 300px;
-        height: 400px;
+        width: 94%;
+        margin: 0 3%;
+        div {
+            width: 100%;
+            height: 100%;
+        }
     }
 </style>

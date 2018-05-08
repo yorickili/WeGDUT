@@ -11,7 +11,9 @@
                         v-model="word"
                         @confirm="search"
                     />
-                    <div class="weui-icon-clear" @click="word = ''"><icon type="clear" size="14" /></div>
+                    <div class="weui-icon-clear" @click="word = ''">
+                        <icon type="clear" size="14" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,7 +36,6 @@
                 </div>
             </div>
         </div>
-        <Mover actions="我的借阅" @handler="moverHandler" />
     </movable-area>
 </template>
 

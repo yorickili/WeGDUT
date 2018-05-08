@@ -160,23 +160,30 @@ const getBook = (data) => {
         const setCatalog = ($catalog) => {
             book.catalog = tool.btoa($catalog).slice(14).replace(/&.*?;/g, '');
         };
-        const setSite = ($site) => {
-            book.site = $site;
+        const setMap = ($site) => {
+            book.map = $site.map((item) => {
+                return {
+                    lib: item.Room,
+                    site: item.position || '未查询到位置信息',
+                    status: item.Status,
+                };
+            });
         };
         setInfo(res.DetailInfo);
         setIntro(res.DetailIntro);
         setCatalog(res.DetailContents);
-        setSite(res.DetailCollection);
+        setMap(res.DetailCollection);
+        console.log(book.map);
         resolve(book);
     });
 };
 
 const getStore = () => {
     return new Promise(async (resolve) => {
-        resolve();
-        // const res = await request({
-        //     url: '/'
-        // });
+        const res = await request({
+            url: '/gdutlibrary/book',
+        });
+        resolve(res);
     });
 };
 

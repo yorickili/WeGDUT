@@ -22,25 +22,23 @@
                 </div>
             </swiper-item>
             <swiper-item>
-                <scroll-view class="intro" scroll-y="true" >
+                <scroll-view class="intro scroller" scroll-y="true" >
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{intro}}
                 </scroll-view>
             </swiper-item>
             <swiper-item>
-                <scroll-view scroll-y="true" class="catalog">
+                <scroll-view class="catalog scroller" scroll-y="true">
                     <div v-html="catalog"></div>
                 </scroll-view>
             </swiper-item>
             <swiper-item>
-                <div class="site">
-                    <div class="library">
-                        <div v-for="(item, index) in site" :key="index">{{item.Room}}</div>
-                    </div>
-                    <div class="coordinate">
-                        <div v-for="(item, index) in site" :key="index">{{item.position}}</div>
-                    </div>
-                    <div class="status">
-                        <div v-for="(item, index) in site" :key="index">{{item.Status}}</div>                        
+                <div class="map scroller">
+                    <div class="card" v-for="(item, index) in map" :key="index">
+                        <div class="lib">{{item.lib}}</div>
+                        <div class="info">
+                            <div class="site">{{item.site}}</div>
+                            <div class="status">{{item.status}}</div>
+                        </div>
                     </div>
                 </div>
             </swiper-item>
@@ -76,7 +74,7 @@
                 isbn: '',
                 intro: '',
                 catalog: '',
-                site: [],
+                map: [],
             };
         },
         async beforeMount() {
