@@ -10,8 +10,8 @@ app.$mount();
 export default {
     config: {
         pages: [
-            'pages/course/course',
-            '^pages/wall/wall',
+            '^pages/course/course',
+            'pages/wall/wall',
             'pages/explore/explore',
             'pages/login/login',
             'pages/about/about',

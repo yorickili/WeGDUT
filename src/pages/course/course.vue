@@ -5,7 +5,7 @@
             <div class="week-wrapper" v-for="item in week" :key="item.id">
                 <div class="week">
                     <div>{{item.day}}</div>
-                    <!-- <div>{{item.date}}</div> -->
+                    <div>{{item.date}}</div>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
     import Picker from '@/components/Picker';
     import Button from '@/components/Button';
     import { lessonTime } from '@/config';
-    import { promiser, jointer } from '@/lib';
+    import { promiser, jointer, tool } from '@/lib';
 
     export default {
         components: { Mover, Picker, Button },
@@ -50,41 +50,38 @@
             return {
                 week: [{
                     day: '周一',
-                    date: '03-05',
                 }, {
                     day: '周二',
-                    date: '03-06',
                 }, {
                     day: '周三',
-                    date: '03-07',
                 }, {
                     day: '周四',
-                    date: '03-08',
                 }, {
                     day: '周五',
-                    date: '03-09',
                 }, {
                     day: '周六',
-                    date: '03-10',
                 }, {
                     day: '周日',
-                    date: '03-11',
                 }],
                 lessonTime,
                 course: [],
+                nowWeek: (() => {
+                    const time = Date.now() - new Date(wx.getStorageSync('firstDay')).getTime();
+                    return Math.floor(time / (7 * 86400000));
+                })(),
                 weekList: (() => {
                     const arr = [];
-                    for (let i = 0; i <= 21; i += 1) {
+                    for (let i = 0; i < 21; i += 1) {
                         arr.push(`第${i + 1}周`);
                     }
                     return arr;
                 })(),
             };
         },
-        created() {},
         onShow() {
             if (!wx.getStorageSync('course')) this.getCourse();
             else this.course = this.parseCourse(wx.getStorageSync('course'), 1);
+            this.setWeekDate(this.nowWeek);
         },
         methods: {
             async getCourse() {
@@ -165,6 +162,13 @@
             },
             changeWeek(value) {
                 this.course = this.parseCourse(wx.getStorageSync('course'), value[0]);
+                this.setWeekDate(value[0]);
+            },
+            setWeekDate(index) {
+                const date = tool.getCalendar(wx.getStorageSync('firstDay'), 21)[index];
+                date.forEach((item, i) => {
+                    this.week[i].date = item;
+                });
             },
         },
     };
