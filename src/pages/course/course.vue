@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <Mover actions="刷新课程&切换周数" @handler="moverHandler" />
+        <Mover actions="刷新&切换" @handler="moverHandler" />
         <Picker
             ref="picker"
             :list="weekList"

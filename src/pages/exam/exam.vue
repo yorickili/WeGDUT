@@ -32,21 +32,13 @@
                 list: [],
             };
         },
-        beforeMount() {
-            this.setList();
+        async beforeMount() {
+            this.list = await jointer.getExam(false);
         },
         methods: {
-            async setList(isRefresh) {
-                if (wx.getStorageSync('exam') && !isRefresh) {
-                    this.list = wx.getStorageSync('exam');
-                } else {
-                    this.list = await jointer.getExam();
-                    wx.setStorageSync('exam', this.list);
-                }
-            },
-            moverHandler(index) {
-                switch (index) {
-                    case 0: this.setList(true); break;
+            async moverHandler($index) {
+                switch ($index) {
+                    case 0: this.list = await jointer.getExam(true); break;
                     default: break;
                 }
             },

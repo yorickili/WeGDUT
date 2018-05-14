@@ -1,5 +1,6 @@
 <template>
     <div class="card-container">
+        <div v-if="isShowDel" class="close zan-icon zan-icon-close" @click.stop="deleteCard"></div>
         <div class="main"  @click="go2Origami">
             <div class="header">
                 <img :src="avatar" />
@@ -10,17 +11,17 @@
             </div>
             <div class="body">
                 <div>{{text}}</div>
-                <img v-if="img" :src="img"  mode="aspectFit" @click.stop="previewImage()" />
+                <img v-if="img" :src="img"  mode="aspectFit" @click.stop="previewImage" />
             </div>
         </div>
         <div class="footer">
             <div @click="comment">
-                <img :src="icon.comment" />
+                <img :src="commentIcon" />
                 <span>{{comments.length}}</span>
             </div>
             <div @click="like">
-                <img :src="icon.like" />
-                <span>{{likes.length}}</span>
+                <img :src="likeIcon" />
+                <span>{{likes}}</span>
             </div>
         </div>
     </div>
@@ -39,17 +40,23 @@
             device: String,
             text: String,
             img: String,
-            likes: Array,
+            likes: Number,
+            isLike: Boolean,
             comments: Array,
+            isComment: Boolean,
+            isShowDel: Boolean,
             commentHandler: Function,
         },
         data() {
-            return {
-                icon: {
-                    comment: '/static/icon/评论1.png',
-                    like: '/static/icon/点赞1.png',
-                },
-            };
+            return {};
+        },
+        computed: {
+            commentIcon() {
+                return `/static/icon/评论${this.isComment ? 2 : 1}.png`;
+            },
+            likeIcon() {
+                return `/static/icon/点赞${this.isLike ? 2 : 1}.png`;
+            },
         },
         methods: {
             previewImage() {
@@ -58,13 +65,12 @@
             comment() {
                 if (this.type === 'wall') this.go2Origami();
                 else this.$emit('commentHandler');
-                // this.icon.comment = '/static/icon/评论2.png';
             },
             async like() {
                 const code = await jointer.like({ id: this.id });
                 switch (code) {
-                    case 200: this.icon.like = '/static/icon/点赞2.png'; break;
-                    case 500: this.icon.like = '/static/icon/点赞1.png'; break;
+                    case 200: this.isLike = true; this.likes += 1; break;
+                    case 500: this.isLike = false; this.likes -= 1; break;
                     default: break;
                 }
             },
@@ -72,6 +78,9 @@
                 if (this.type === 'wall') {
                     wx.navigateTo({ url: `/pages/origami/origami?detail=${JSON.stringify(this.$props)}` });
                 }
+            },
+            async deleteCard() {
+                console.log('del');
             },
         },
     };

@@ -9,7 +9,9 @@
             :text="text"
             :img="img"
             :likes="likes"
+            :isLike="isLike"
             :comments="comments"
+            :isComment="isComment"
             @commentHandler="visible.commentHandler = !visible.commentHandler"
         />
         <div class="comments">
@@ -51,8 +53,10 @@
                 device: '',
                 text: '',
                 img: '',
-                likes: [],
+                likes: 0,
+                isLike: false,
                 comments: [],
+                isComment: false,
                 visible: {
                     commentHandler: false,
                 },
@@ -63,7 +67,7 @@
         beforeMount() {
             if (this.$root.$mp.query.detail) {
                 const detail = JSON.parse(this.$root.$mp.query.detail);
-                ['id', 'avatar', 'nickname', 'time', 'device', 'text', 'img', 'likes', 'comments'].forEach((attr) => {
+                ['id', 'avatar', 'nickname', 'time', 'device', 'text', 'img', 'likes', 'isLike', 'comments', 'isComment'].forEach((attr) => {
                     this[attr] = detail[attr];
                 });
                 this.visible.commentHandler = false;

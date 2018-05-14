@@ -24,7 +24,11 @@
                 :text="card.text"
                 :img="card.img"
                 :likes="card.likes"
-                :comments="card.comments" />
+                :isLike="card.isLike"
+                :comments="card.comments"
+                :isComment="card.isComment"
+                :isShowDel="isMy"
+            />
         </div>
         <Mover :actions="actions" @handler="moverHandler" />
     </movable-area>
@@ -46,35 +50,37 @@
                 avatar: '',
                 nickname: '',
                 cards: [],
+                page: 0,
                 isMy: false,
             };
         },
         computed: {
             actions() {
-                return `贴卡片&${this.isMy ? '全部' : '我的'}卡片`;
+                return `刷新&贴卡片&${this.isMy ? '全部' : '我的'}卡片`;
             },
         },
         beforeMount() {
-            this.getCards();
+            this.getCards(0, false);
         },
         methods: {
-            getCards(isMy) {
+            getCards(page, isMy) {
                 this.isMy = isMy;
                 return new Promise(async (resolve) => {
-                    this.cards = await jointer.getCards(isMy);
+                    this.cards = await jointer.getCards(page, isMy);
                     resolve();
                 });
             },
             moverHandler(index) {
                 switch (index) {
-                    case 0: wx.navigateTo({ url: '/pages/painter/painter' }); break;
-                    case 1: this.getCards(!this.isMy); break;
+                    case 0: this.getCards(0, this.isMy); break;
+                    case 1: wx.navigateTo({ url: '/pages/painter/painter' }); break;
+                    case 2: this.getCards(0, !this.isMy); break;
                     default: break;
                 }
             },
         },
         async onPullDownRefresh() {
-            await this.getCards(this.isMy);
+            await this.getCards(0, this.isMy);
             wx.stopPullDownRefresh();
         },
     };

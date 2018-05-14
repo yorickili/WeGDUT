@@ -6,10 +6,12 @@
             <img v-else :src="img" mode="aspectFit" @click="chooseImg" />
         </div>
         <Button
-            :disabled="!this.text"
             stylus="width: 80%; margin: 20px 10%;"
+            :disabled="!this.text"
             @click="sendCard"
-        >确定</Button>
+        >
+        确定
+        </Button>
     </div>
 </template>
 
@@ -28,7 +30,7 @@
         methods: {
             async chooseImg() {
                 const res = await promiser.chooseImage({ count: 1 });
-                this.img = res.tempFilePaths;
+                this.img = res.tempFilePaths[0];
             },
             previewImg() {
                 wx.previewImage({ urls: this.img });

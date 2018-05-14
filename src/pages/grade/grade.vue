@@ -20,7 +20,7 @@
                 <div class="zan-cell__ft">{{item.score}}</div>
             </div>
         </scroll-view>
-        <Mover actions="刷新成绩&切换学期" @handler="moverHandler" />
+        <Mover actions="刷新&切换" @handler="moverHandler" />
         <Picker 
             ref="picker"
             :list="termList"

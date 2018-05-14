@@ -33,11 +33,19 @@ page {
     border-radius: 10px;
     background: #FFFFFF;
     overflow: hidden;
+    position: relative;
+    .close {
+        font-size: 30px;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        color: red;
+    }
     .main {
         padding: 4% 4% 0;
         .header {
             @extend %flex;
-            width: 300px;
+            width: 270px;
             height: 40px;
             font-size: $smallFontSize;
             img {

@@ -1,14 +1,28 @@
 import tool from './tool';
+import qiniu from './qiniu';
 
 const request = (params) => {
     return new Promise((resolve, reject) => {
+        wx.showLoading();
         wx.request({
             url: `https://wegdut.yoricklee.com/test${params.url}`,
             method: params.method || 'POST',
             header: params.header || { Authorization: wx.getStorageSync('token') || '' },
             data: { ...params.data },
-            success: res => resolve(res.data),
+            success: (res) => {
+                console.log(res);
+                switch (res.data.code) {
+                    case 200: resolve(res.data); break;
+                    case 402: wx.showToast({ title: '402 - 未获取到token! 请重新登录~', icon: 'none' }); resolve(res.data); break;
+                    case 403: wx.showToast({ title: '403 - 缺少参数！请反馈您的问题给我们，谢谢~', icon: 'none' }); resolve(res.data); break;
+                    case 404: wx.showToast({ title: '404 - 部分数据未找到！请反馈您的问题给我们，谢谢~', icon: 'none' }); resolve(res.data); break;
+                    case 500: wx.showToast({ title: '500 - 内部错误！请反馈您的问题给我们，谢谢~', icon: 'none' }); resolve(res.data); break;
+                    case 505: wx.showToast({ title: '505 - cookie过期！请重新登录~', icon: 'none' }); resolve(res.data); break;
+                    default: reject(); break;
+                }
+            },
             fail: reject,
+            complete: wx.hideLoading,
         });
     });
 };
@@ -25,8 +39,9 @@ const getProofUrl = () => {
 const getToken = ($data) => {
     return new Promise(async (resolve) => {
         const { data } = await request({ url: '/wechatToken', method: 'GET', data: $data });
-        wx.setStorageSync('wechatToken', data);
-        resolve(data);
+        wx.setStorageSync('wechatToken', data.token);
+        wx.setStorageSync('uid', data.uid);
+        resolve();
     });
 };
 
@@ -55,6 +70,7 @@ const getCalendar = () => {
 const getCourse = () => {
     return new Promise(async (resolve) => {
         const res = await request({ url: '/jwgl/course' });
+        console.log(res);
         resolve(res);
     });
 };
@@ -84,26 +100,36 @@ const getGrade = () => {
     });
 };
 
-const getExam = () => {
+const getExam = ($isRefresh = false) => {
+    const getColor = ($surplus) => {
+        if ($surplus > 30) return '#28D9A5';
+        else if ($surplus > 7) return '#FFD92B';
+        else if ($surplus >= 0) return '#F56262';
+        return '#888888';
+    };
     return new Promise(async (resolve) => {
-        const { data } = await request({ url: '/jwgl/exam', method: 'GET' });
-        const list = data.rows;
-        list.forEach((item, i) => {
-            list[i].stamp = new Date(item.date).getTime();
-            list[i].time = `${item.date}  周${item.day}  ${item.time}`;
-            list[i].site = `${item.campus}  ${item.site}`;
-            list[i].surplus = Math.ceil((list[i].stamp - Date.now()) / 86400000);
-            list[i].color = (() => {
-                if (list[i].surplus > 30) return '#28D9A5';
-                else if (list[i].surplus > 7) return '#FFD92B';
-                else if (list[i].surplus >= 0) return '#F56262';
-                return '#888888';
-            })();
-            delete list[i].date;
-            delete list[i].day;
-            delete list[i].campus;
-        });
-        resolve(tool.quickSort(list, 'stamp').reverse());
+        if (wx.getStorageSync('exam') && !$isRefresh) {
+            resolve(wx.getStorageSync('exam').map((item) => {
+                const surplus = Math.ceil((item.stamp - Date.now()) / 86400000);
+                return Object.assign(item, { surplus, color: getColor(surplus) });
+            }));
+        } else {
+            const { data } = await request({ url: '/jwgl/exam', method: 'GET' });
+            const list = data.rows.map((item) => {
+                const stamp = new Date(item.date).getTime();
+                const surplus = Math.ceil((stamp - Date.now()) / 86400000);
+                return {
+                    stamp,
+                    surplus,
+                    name: item.name,
+                    time: `${item.date}  周${item.day}  ${item.time}`,
+                    site: `${item.campus}  ${item.site}`,
+                    color: getColor(surplus),
+                };
+            });
+            wx.setStorageSync('exam', list);
+            resolve(list.sort((a, b) => a.stamp - b.stamp));
+        }
     });
 };
 
@@ -190,77 +216,112 @@ const getStore = () => {
 const getNews = () => {
     return new Promise(async (resolve) => {
         const res = await request({
-            method: 'GET',
             url: '/gdutnews',
+            method: 'GET',
         });
-        const list = res.news_ifw_Accs_GetList_list1;
-        const whiteList = ['rd', 'type', 'name', 'unit', 'time'];
-        list.forEach((item, i) => {
-            list[i].rd = item.NewsRd;
-            list[i].type = item.Colu;
-            list[i].name = item.Title;
-            list[i].unit = item.Unit;
-            list[i].time = item.RelDate;
-            Object.keys(item).forEach((key) => {
-                if (whiteList.indexOf(key) === -1) delete list[i][key];
-            });
-        });
-        resolve(list);
+        resolve(res.data.news_ifw_Accs_GetList_list1.map((item) => {
+            return {
+                rd: item.NewsRd,
+                type: item.Colu,
+                name: item.Title,
+                unit: item.Unit,
+                time: item.RelDate,
+            };
+        }));
     });
 };
 
-const getNotice = (rd) => {
+const getNotice = ($rd) => {
     return new Promise(async (resolve) => {
         const res = await request({
             method: 'GET',
             url: '/gdutnews/detail',
-            data: { NewsRd: rd },
+            data: { NewsRd: $rd },
         });
-        resolve(res);
+        resolve(res.data);
     });
 };
 
-const getCards = (isMy = false) => {
+const getCards = ($currentPage = 0, $isMy = false) => {
     return new Promise(async (resolve) => {
         const res = await request({
-            url: `/gdutwall/get${isMy ? 'My' : 'All'}Post`,
+            url: `/gdutwall/get${$isMy ? 'My' : 'All'}Post`,
             method: 'GET',
-            data: {
-                currentPage: 0,
-            },
+            data: { currentPage: $currentPage },
         });
-        const cards = res.data;
-        cards.forEach((item, i) => {
+        const cards = res.data.map((item) => {
             /* eslint-disable no-underscore-dangle */
-            cards[i].id = item._id;
-            cards[i].avatar = item.user_id.avatarUrl;
-            cards[i].nickname = item.user_id.nickname;
-            cards[i].time = '1分钟前';
-            // cards[i].time = tool.getLapseTime(new Date(item.createdAt.replace('-', '/')));
-            cards[i].device = item.phone || '未知设备';
-            cards[i].text = item.content;
-            cards[i].img = item.imgUrl;
-            cards[i].likes = item.likes;
-            item.comments.forEach((comment, n) => {
-                cards[i].comments[n].avatar = comment.from_id.avatarUrl;
-                cards[i].comments[n].nickname = comment.from_id.nickName;
-                cards[i].comments[n].text = comment.content;
-            });
+            return {
+                id: item._id,
+                avatar: item.user_id.avatarUrl,
+                nickname: item.user_id.nickName,
+                time: tool.getLapseTime(item.createdAt * 1000),
+                device: item.phone || '未知设备',
+                text: item.content,
+                img: item.imgUrl,
+                likes: item.likes,
+                isLike: item.isLiked,
+                comments: item.comments.map((comment) => {
+                    return {
+                        avatar: comment.from_id.avatarUrl,
+                        nickname: comment.from_id.nickName,
+                        text: comment.content,
+                    };
+                }),
+                isComment: (() => {
+                    let mark = false;
+                    for (let i = 0; i < item.comments.length; i += 1) {
+                        if (wx.getStorageSync('uid') === item.comments[i].from_id._id) {
+                            mark = true;
+                            break;
+                        }
+                    }
+                    return mark;
+                })(),
+            };
         });
         resolve(cards);
     });
 };
 
-const sendCard = (data) => {
-    return new Promise(async () => {
+const sendCard = ($data) => {
+    const uploadImg = (img) => {
+        return new Promise((resolve, reject) => {
+            if (img) {
+                qiniu.upload(img, (res) => {
+                    resolve(`http://${res.imageURL}`);
+                }, (err) => {
+                    reject(err);
+                }, {
+                    uploadURL: 'https://up-z2.qbox.me',
+                    domain: 'oox3shbsf.bkt.clouddn.com/',
+                    uptokenURL: 'https://wegdut.yoricklee.com/uptoken',
+                });
+            } else {
+                resolve('');
+            }
+        });
+    };
+    return new Promise(async (resolve, reject) => {
         const res = await request({
             url: '/gdutWall/send',
-            data,
+            data: Object.assign($data, {
+                imgUrl: await uploadImg($data.imgUrl),
+            }),
         });
-        console.log(res);
-        if (res.data.code === 200) {
-            console.log(200);
+        switch (res.data.code) {
+            case 200: resolve(); break;
+            default: reject(); break;
         }
+    });
+};
+
+const deleteCard = () => {
+    return new Promise(async (resolve) => {
+        const res = await request({
+            url: '/gdutWall/del',
+        });
+        resolve(res);
     });
 };
 
@@ -270,7 +331,6 @@ const sendComment = (data) => {
             url: '/gdutWall/comment',
             data,
         });
-        console.log(res);
         if (res.data.code === 200) {
             console.log(200);
         }
@@ -306,6 +366,7 @@ export default {
     getNotice,
     getCards,
     sendCard,
+    deleteCard,
     sendComment,
     like,
 };
