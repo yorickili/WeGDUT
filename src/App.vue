@@ -1,8 +1,8 @@
 <script>
     import { promiser, jointer } from '@/lib';
-    import '@/assets/style/main.scss';
-    import '@/assets/style/zanui.scss';
-    
+    import '@/assets/style/main.less';
+    import '@/assets/style/zanui.less';
+
     export default {
         async created() {
             try {
@@ -20,5 +20,5 @@
     };
 </script>
 
-<style lang="scss">
+<style lang="less">
 </style>

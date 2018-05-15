@@ -21,7 +21,7 @@
             </div>
         </scroll-view>
         <Mover actions="刷新&切换" @handler="moverHandler" />
-        <Picker 
+        <Picker
             ref="picker"
             :list="termList"
             @change="changeTerm"
@@ -144,6 +144,6 @@
     };
 </script>
 
-<style lang="scss">
-    
+<style lang="less">
+
 </style>

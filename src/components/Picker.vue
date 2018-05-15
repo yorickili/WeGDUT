@@ -7,7 +7,7 @@
         <picker-view
             class="picker"
             indicator-class="indicator"
-            :value="value" 
+            :value="value"
             @change="changeValue"
         >
             <picker-view-column>
@@ -51,6 +51,6 @@
     };
 </script>
 
-<style lang="scss">
+<style lang="less">
 
 </style>

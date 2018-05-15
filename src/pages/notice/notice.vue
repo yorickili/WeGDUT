@@ -20,7 +20,7 @@
     };
 </script>
 
-<style lang="scss">
+<style lang="less">
     .notice-container {
         width: 94%;
         margin: 0 3%;

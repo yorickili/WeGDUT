@@ -1,10 +1,10 @@
 <template>
     <div class="comment-wrapper">
-        <input type="text" placeholder="写评论…"/> 
+        <input type="text" placeholder="写评论…"/>
         <div class="anon">
             <div>是否匿名</div>
             <switch checked="{{anonValue}}"/>
-        </div>      
+        </div>
     </div>
 </template>
 
@@ -18,7 +18,7 @@
     };
 </script>
 
-<style lang="scss">
+<style lang="less">
     .comment-wrapper{
         position: fixed;
         bottom: 0;

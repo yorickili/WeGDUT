@@ -51,7 +51,7 @@
     };
 </script>
 
-<style lang="scss">
+<style lang="less">
     .morning-container {
         .cover {
             width: 100%;

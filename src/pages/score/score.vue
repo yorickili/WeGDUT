@@ -57,7 +57,7 @@
     };
 </script>
 
-<style lang="scss">
+<style lang="less">
     .list {
         width: 100%;
         margin-top: 20px;

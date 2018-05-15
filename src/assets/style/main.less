@@ -1,28 +1,20 @@
 @charset 'utf-8';
-@import './zan/btn.scss';
-@import './zan/cell.scss';
-@import './zan/field.scss';
-@import './zan/icon.scss';
-@import './zan/panel.scss';
-@import './zan/popup.scss';
-@import './zan/card.scss';
-@import './weui/search.scss';
-
-@import './var.scss';
-@import './extends.scss';
+@import './search.less';
+@import './var.less';
+@import './extends.less';
 
 // common
 page {
-    @extend %frame;
-    background: $bgColor;
+    &:extend(.frame);
+    background: @bgColor;
 }
 .container {
-    @extend %frame;
+    &:extend(.frame);
 }
 
 // components
 .button-container {
-    background-color: $mainColor;
+    background-color: @mainColor;
     border-radius: 5px;
     width: 80%;
     margin: 20px 10%;
@@ -44,18 +36,18 @@ page {
     .main {
         padding: 4% 4% 0;
         .header {
-            @extend %flex;
+            &:extend(.flex);
             width: 270px;
             height: 40px;
-            font-size: $smallFontSize;
+            font-size: @smallFontSize;
             img {
                 width: 40px;
                 height: 40px;
                 display: block;
             }
             div {
-                @extend %flexC;
-                @extend %spill;
+                &:extend(.flexC);
+                &:extend(.spill);
                 align-items: flex-start;
                 justify-content: center;
                 flex: 1;
@@ -65,12 +57,12 @@ page {
                 }
             }
             .device {
-                color: $fontColor;
+                color: @fontColor;
             }
         }
         .body {
             padding: 10px 0;
-            font-size: $normalFontSize;
+            font-size: @normalFontSize;
             img {
                 width: 100px;
                 height: 100px;
@@ -79,18 +71,18 @@ page {
         }
     }
     .footer {
-        @extend %flex;
+        &:extend(.flex);
         width: 100%;
         height: 25px;
-        font-size: $smallFontSize;
-        color: $fontColor;
-        border-top: 1px solid $bgColor;
+        font-size: @smallFontSize;
+        color: @fontColor;
+        border-top: 1px solid @bgColor;
         div {
-            @extend %flex;
+            &:extend(.flex);;
             flex: 1;
             height: 100%;
             line-height: 20px;
-            border-right: 1px solid $bgColor;
+            border-right: 1px solid @bgColor;
             img {
                 width: 15px;
                 height: 15px;
@@ -104,10 +96,10 @@ page {
     width: 50px;
     height: 50px;
     color: #FFFFFF;
-    background: $mainColor;
+    background: @mainColor;
     border-radius: 25px;
     font-size: 30px;
-    @extend %flex; 
+    &:extend(.flex);
     div {
         margin-top: -15px;
     }
@@ -173,11 +165,11 @@ page {
 }
 // pages
 .course-container {
-    @extend %flexC;
-    color: $fontColor;
-    font-size: $smallFontSize;
+    &:extend(.flexC);
+    color: @fontColor;
+    font-size: @smallFontSize;
     .header {
-        @extend %flex;
+        &:extend(.flex);
         width: 100%;
         height: 70rpx;
         background: #FFFFFF;
@@ -188,11 +180,11 @@ page {
             background: #FFFFFF;
         }
         .week-wrapper {
-            @extend %flexC;
+            &:extend(.flexC);
             flex: 1;
             height: 100%;
             .week {
-                @extend %flexC;
+                &:extend(.flexC);
                 width: 100%;
                 height: 70rpx;
                 background: #FFFFFF;
@@ -200,15 +192,15 @@ page {
         }
     }
     .body {
-        @extend %flex;
+        &:extend(.flex);
         flex: 1;
         width: 100%;
         .lesson-time-wrapper {
-            @extend %flexC;
+            &:extend(.flexC);
             width: 70rpx;
             height: 100%;
             .lesson-time {
-                @extend %flexC;
+                &:extend(.flexC);
                 flex: 1;
                 width: 100%;
                 border-top: 1rpx solid rgba(0,0,0,0.1);
@@ -225,7 +217,7 @@ page {
                 width: 40px;
                 color: #FFFFFF;
                 border-radius: 10px;
-                padding: 0 5px; 
+                padding: 0 5px;
                 font-size: 12px;
                 display: flex;
                 align-items: center;
@@ -234,7 +226,7 @@ page {
             }
         }
         .course-wrapper {
-            @extend %flex;
+            &:extend(.flex);
             flex: 1;
             height: 100%;
         }
@@ -246,22 +238,22 @@ page {
         height: 200px;
         position: absolute;
         swiper {
-            @extend %frame;
+            &:extend(.frame);
             img {
-                @extend %frame;
+                &:extend(.frame);
             }
         }
         .user{
-            @extend %flex;
+            &:extend(.flex);
             width: 180px;
             height: 75px;
             position: absolute;
             top: 150px;
             right: 15px;
             span {
-                @extend %spill;
+                &:extend(.spill);
                 flex: 1;
-                font-size: $largeFontSize;
+                font-size: @largeFontSize;
                 position: relative;
                 top: -2px;
                 right: 0;
@@ -345,7 +337,7 @@ page {
                 flex-direction: column;
                 .text {
                     font-size: 15px;
-                    word-break: break-all; 
+                    word-break: break-all;
                 }
             }
         }
@@ -412,7 +404,7 @@ page {
             padding: 10px 8%;
             background: #FFFFFF;
             border-radius: 10px;
-            @extend %flexC;
+            &:extend(.flexC);
             align-items: flex-start;
             div {
                 height: 30px;
@@ -420,13 +412,13 @@ page {
                 position: relative;
             }
             .name {
-                font-size: $normalFontSize;
+                font-size: @normalFontSize;
                 font-weight: bold;
                 letter-spacing: 1px;
                 .label {
                     width: 5px;
                     height: 20px;
-                    background: $mainColor;
+                    background: @mainColor;
                     position: absolute;
                     top: 6px;
                     left: -15px;
@@ -443,7 +435,6 @@ page {
                     position: absolute;
                     top: 0;
                     right: -10px;
-                    // left: 90%;
                     span {
                         font-size: 30px;
                     }
@@ -493,7 +484,7 @@ page {
         width: 76%;
         height: 125px;
         padding-left: 10%;
-        @extend %flex;
+        &:extend(.flex);
         justify-content: flex-start;
         background: #FFFFFF;
         border-radius: 10px;
@@ -505,11 +496,11 @@ page {
             height: 70%;
             padding-left: 25%;
             font-size: 12px;
-            @extend %flexC;
+            &:extend(.flexC);
             .label {
                 width: 100%;
                 padding-bottom: 5px;
-                @extend %flex;
+                &:extend(.flex);
                 justify-content: flex-start;
                 .circle {
                     width: 12px;
@@ -551,18 +542,18 @@ page {
             margin: 10px 5%;
             border-radius: 10px;
             background: #FFFFFF;
-            @extend %flex;
+            &:extend(.flex);
             >div {
                 height: 100%;
             }
             .icon {
                 flex: 1;
-                @extend %flex;
+                &:extend(.flex);
                 .zan-icon {
                     width: 40px;
                     height: 40px;
                     font-size: 40px;
-                    color: $mainColor;
+                    color: @mainColor;
                     position: relative;
                     top: -8px;
                     left: -10px;
@@ -571,28 +562,28 @@ page {
             .info {
                 flex: 4;
                 width: 66.66%;
-                @extend %flexC;
+                &:extend(.flexC);
                 align-items: flex-start;
                 .name {
                     width: 100%;
                     font-size: 18px;
-                    @extend %spill;
+                    &:extend(.spill);
                 }
                 .author {
                     width: 100%;
                     font-size: 14px;
-                    color: $fontColor;
-                    @extend %spill;
+                    color: @fontColor;
+                    &:extend(.spill);
                 }
             }
             .arrow {
                 flex: 1;
-                @extend %flex;
+                &:extend(.flex);
                 .zan-icon {
                     width: 20px;
                     height: 20px;
                     font-size: 20px;
-                    color: $mainColor;
+                    color: @mainColor;
                     position: relative;
                     top: -3px;
                     left: 22px;
@@ -643,7 +634,7 @@ page {
                 color: #888888;
                 div {
                     width: 100%;
-                    @extend %spill;
+                    &:extend(.spill);
                 }
                 .title {
                     width: 80%;
@@ -672,7 +663,7 @@ page {
                     width: 50%;
                     float: left;
                     text-align: left;
-                    @extend %spill;
+                    &:extend(.spill);
                 }
                 .info {
                     width: 50%;
@@ -705,18 +696,18 @@ page {
                 float: left;
                 width: 90%;
                 height: 100%;
-                @extend %flexC;
+                &:extend(.flexC);
                 align-items: flex-start;
                 .name {
                     width: 90%;
                     font-size: 16px;
                     padding-bottom: 5px;
-                    @extend %spill;
+                    &:extend(.spill);
                 }
                 .date {
                     width: 90%;
                     font-size: 14px;
-                    color: $fontColor;
+                    color: @fontColor;
                     .borrow {
                         float: left;
                     }
@@ -733,7 +724,7 @@ page {
                 background: #28D9A5;
                 color: #FFFFFF;
                 font-size: 16px;
-                @extend %flex;
+                &:extend(.flex);
             }
         }
     }
@@ -749,7 +740,7 @@ page {
             margin: 10px 5%;
             border-radius: 10px;
             background: #FFFFFF;
-            @extend %flexC;
+            &:extend(.flexC);
             .name{
                 width: 100%;
                 color: #576B95;
@@ -757,11 +748,11 @@ page {
                 font-size: 18px;
                 border-bottom: 1px solid #E1E1E1;
                 position: relative;
-                @extend %spill;
+                &:extend(.spill);
                 .label {
                     width: 5px;
                     height: 20px;
-                    background: $mainColor;
+                    background: @mainColor;
                     position: absolute;
                     top: 6px;
                     left: -1px;
@@ -772,7 +763,7 @@ page {
                 padding: 5px 10px;
                 font-size: 15px;
                 line-height: 25px;
-                color: $fontColor;
+                color: @fontColor;
             }
         }
     }

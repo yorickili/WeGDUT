@@ -33,7 +33,7 @@
             <div class="anon">
                 <div>是否匿名</div>
                 <switch @change="anon = !anon" />
-            </div>      
+            </div>
         </div>
     </div>
 </template>
@@ -85,6 +85,6 @@
     };
 </script>
 
-<style lang="scss">
+<style lang="less">
 
 </style>
