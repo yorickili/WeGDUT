@@ -1,5 +1,12 @@
 <template>
-    <button class="button-container" :class="className" :style="stylus" @click="$emit('click')">
+    <button
+        class="button-container"
+        :class="className"
+        :style="stylus"
+        :open-type="openType"
+        @getuserinfo="(e) => disabled ? null : $emit('getUserInfo', e)"
+        @click="disabled ? null : $emit('click')"
+    >
         {{text || '确定'}}
     </button>
 </template>
@@ -9,6 +16,7 @@
         props: {
             stylus: String,
             text: String,
+            openType: String,
             type: { type: String, default: 'primary' },
             size: { type: String, default: 'large' },
             disabled: { type: Boolean, default: false },

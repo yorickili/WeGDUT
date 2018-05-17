@@ -3,7 +3,7 @@
         <div class="cover">
             <div class="text">{{termList[termIndex]}}</div>
             <div class="gpa">{{gpa}}</div>
-            <div class="tip">注：此绩点仅供参考（不含选修）</div>
+            <div class="tip">注：加权绩点（不含选修）</div>
         </div>
         <div class="chart">
             <canvas canvas-id="pie" style="width: 100px; height: 100px;"></canvas>
@@ -58,8 +58,9 @@
                 if (list) {
                     list.forEach((item) => {
                         if (!item.isElective) {
-                            gpa += item.gpa;
-                            num += 1;
+                            console.log(item.gpa, item.credit);
+                            gpa += (item.gpa * item.credit);
+                            num += item.credit;
                         }
                     });
                 }

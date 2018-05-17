@@ -1,5 +1,6 @@
 <template>
     <div class="container about-container">
+        <img src="/static/icon/logo.png" />
         <div class="about zan-panel">
             <div class="zan-cell">
                 <div class="zan-cell__bd">制作团队</div>
@@ -8,6 +9,10 @@
             <div class="zan-cell zan-cell--access" @click="previewQRCode()">
                 <div class="zan-cell__bd">公众号</div>
                 <div class="zan-cell__ft">vtmers</div>
+            </div>
+            <div class="zan-cell zan-cell--access" @click="previewQRCode()">
+                <div class="zan-cell__bd">请我们吃糖果~</div>
+                <div class="zan-cell__ft"></div>
             </div>
             <div class="zan-cell zan-cell--access" @click="visible.opinion = !visible.opinion">
                 <div class="zan-cell__bd">意见反馈</div>

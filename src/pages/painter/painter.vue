@@ -5,13 +5,22 @@
             <div v-if="!img" @click="chooseImg">+</div>
             <img v-else :src="img" mode="aspectFit" @click="chooseImg" />
         </div>
-        <Button
-            stylus="width: 80%; margin: 20px 10%;"
-            :disabled="!this.text"
-            @click="sendCard"
-        >
-        确定
-        </Button>
+        <div class="handler">
+            <Button
+                text="匿名发送"
+                stylus="width: 30%; margin: 20px 10%; border-radius: 5px;"
+                :disabled="!this.text"
+                @click="sendCard"
+            />
+            <Button
+                text="发送"
+                stylus="width: 30%; margin: 20px 10%; border-radius: 5px;"
+                :disabled="!this.text"
+                openType="getUserInfo"
+                @getUserInfo="getUserInfo"
+            />
+        </div>
+
     </div>
 </template>
 
@@ -42,6 +51,27 @@
                     imgUrl: this.img,
                     phone: model,
                 });
+                await promiser.showModal({
+                    title: '提示',
+                    content: '贴卡片成功~',
+                    showCancel: false,
+                });
+                wx.switchTab({ url: '/pages/wall/wall' });
+            },
+            getUserInfo(e) {
+                const { errMsg, userInfo } = e.mp.detail;
+                if (errMsg === 'getUserInfo:ok') {
+                    jointer.updateUserInfo({
+                        avatarUrl: userInfo.avatarUrl,
+                        nickName: userInfo.nickName,
+                    });
+                    this.sendCard();
+                } else {
+                    wx.showToast({
+                        title: '允许WeGDUT获取您的信息后才能贴卡片~',
+                        icon: 'none',
+                    });
+                }
             },
         },
     };

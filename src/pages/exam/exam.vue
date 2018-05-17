@@ -17,6 +17,7 @@
                 </div>
             </div>
         </div>
+        <div class="default" v-if="list.length === 0">暂无考试~</div>
         <Mover actions="刷新" @handler="moverHandler" />
     </movable-area>
 </template>

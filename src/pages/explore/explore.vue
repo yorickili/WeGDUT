@@ -18,11 +18,11 @@
             </div>
         </div>
         <div class="zan-panel">
-            <div class="zan-cell zan-cell--access" @click="jump('/pages/morning/morning')">
+            <!-- <div class="zan-cell zan-cell--access" @click="jump('/pages/morning/morning')">
                 <img class="icon" src="/static/icon/早起打卡.png" />
                 <div class="zan-cell__bd">早起打卡</div>
                 <div class="zan-cell__ft"></div>
-            </div>
+            </div> -->
             <div class="zan-cell zan-cell--access" @click="jump('/pages/library/library')">
                 <img class="icon" src="/static/icon/图书馆藏.png" />
                 <div class="zan-cell__bd">图书馆藏</div>

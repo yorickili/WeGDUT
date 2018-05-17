@@ -1,40 +1,39 @@
 <template>
-    <div>
-        <button v-if="!nickname">获取信息</button>
-        <movable-area class="container wall-container">
-            <div class="cover">
-                <swiper :circular="true" :autoplay="true">
-                    <swiper-item v-for="cover in covers" :key="cover.index">
-                        <img :src="cover" />
-                    </swiper-item>
-                </swiper>
-                <div class="user">
-                    <span>{{nickname}}</span>
-                    <img :src="avatar" />
-                </div>
+    <movable-area class="container wall-container">
+        <div class="cover">
+            <swiper :circular="true" :autoplay="true">
+                <swiper-item v-for="cover in covers" :key="cover.index">
+                    <img :src="cover" />
+                </swiper-item>
+            </swiper>
+            <div class="user">
+                <span>{{nickname}}</span>
+                <img :src="avatar" />
             </div>
-            <div class="cards">
-                <Card
-                    v-for="card in cards"
-                    :key="card.index"
-                    type="wall"
-                    :id="card.id"
-                    :avatar="card.avatar"
-                    :nickname="card.nickname"
-                    :device="card.device"
-                    :time = "card.time"
-                    :text="card.text"
-                    :img="card.img"
-                    :likes="card.likes"
-                    :isLike="card.isLike"
-                    :comments="card.comments"
-                    :isComment="card.isComment"
-                    :isShowDel="isMy"
-                />
-            </div>
-            <Mover :actions="actions" @handler="moverHandler" />
-        </movable-area>
-    </div>
+        </div>
+        <div class="cards">
+            <Card
+                v-for="(card, index) in cards"
+                :key="index"
+                type="wall"
+                :index="index"
+                :id="card.id"
+                :avatar="card.avatar"
+                :nickname="card.nickname"
+                :device="card.device"
+                :time = "card.time"
+                :text="card.text"
+                :img="card.img"
+                :likes="card.likes"
+                :isLike="card.isLike"
+                :comments="card.comments"
+                :isComment="card.isComment"
+                :isShowDel="isMy"
+                @delete="deleteCard"
+            />
+        </div>
+        <Mover :actions="actions" @handler="moverHandler" />
+    </movable-area>
 </template>
 
 <script>
@@ -47,8 +46,8 @@
         data() {
             return {
                 covers: [
-                    'http://minigame.qq.com/common_manage/381/big_image_ba04e5557bdc42bf5f3e3af3379843df.jpg',
-                    'http://minigame.qq.com/common_manage/381/big_image_df699c4fa854d9245bd0f7c1662be5ca.jpg',
+                    'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.L3sGYHWHzCHs42cba9d1d3ac823c23874d1e224c5ecb.png',
+                    'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.htI4eZyMlcQR693c3e450d6ba44982cd89dbd77e07cd.png',
                 ],
                 avatar: '',
                 nickname: '',
@@ -61,9 +60,6 @@
             actions() {
                 return `贴卡片&${this.isMy ? '全部' : '我的'}卡片`;
             },
-        },
-        created() {
-
         },
         beforeMount() {
             this.getCards(0, false);
@@ -82,6 +78,9 @@
                     case 1: this.getCards(0, !this.isMy); break;
                     default: break;
                 }
+            },
+            deleteCard(index) {
+                this.cards.splice(index, 1);
             },
         },
         async onPullDownRefresh() {

@@ -15,8 +15,10 @@ page {
 // components
 .button-container {
     background-color: @mainColor;
+    color: #FFFFFF;
     border-radius: 5px;
     width: 80%;
+    font-size: 15px;
     margin: 20px 10%;
 }
 .card-container {
@@ -136,7 +138,7 @@ page {
         .item {
             width: 100%;
             height: 30px;
-            font-size: 12px;
+            font-size: 15px;
             color: #000000;
             line-height: 30px;
             text-align: center;
@@ -293,8 +295,15 @@ page {
     }
 }
 .about-container {
+    img {
+        width: 80px;
+        height: 80px;
+        position: absolute;
+        top: 20px;
+        left: 40%;
+    }
     .about {
-        margin-top: 100px;
+        margin-top: 120px;
     }
     .opinion {
         width: 80%;
@@ -357,13 +366,7 @@ page {
             height: 40px;
         }
         .anon{
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 7px;
-            switch {
-                margin-left: 20px;
-            }
+            &:extend(.flex);
         }
     }
 }
@@ -390,6 +393,10 @@ page {
             margin: 0 5% 20px;
             color: #888888;
         }
+    }
+    .handler {
+        width: 100%;
+        &:extend(.flex);
     }
 }
 .exam-container {
@@ -441,6 +448,10 @@ page {
                 }
             }
         }
+    }
+    .default {
+        &:extend(.frame);
+        &:extend(.flex);
     }
 }
 .score-container {

@@ -16,7 +16,8 @@ const request = (params) => {
                     case 402: wx.showToast({ title: '402 - 未获取到token! 请重新登录~', icon: 'none' }); resolve(res.data); break;
                     case 403: wx.showToast({ title: '403 - 缺少参数！请反馈您的问题给我们，谢谢~', icon: 'none' }); resolve(res.data); break;
                     case 404: wx.showToast({ title: '404 - 部分数据未找到！请反馈您的问题给我们，谢谢~', icon: 'none' }); resolve(res.data); break;
-                    case 500: wx.showToast({ title: '500 - 内部错误！请反馈您的问题给我们，谢谢~', icon: 'none' }); resolve(res.data); break;
+                    case 500: if (params.url !== '/gdutWall/like') wx.showToast({ title: '500 - 内部错误！请反馈您的问题给我们，谢谢~', icon: 'none' });
+                        resolve(res.data); break;
                     case 505: wx.showToast({ title: '505 - cookie过期！请重新登录~', icon: 'none' }); resolve(res.data); break;
                     default: reject(); break;
                 }
@@ -36,12 +37,25 @@ const getProofUrl = () => {
     });
 };
 
-const getToken = ($data) => {
+const getToken = ($code) => {
     return new Promise(async (resolve) => {
-        const { data } = await request({ url: '/wechatToken', method: 'GET', data: $data });
+        const { data } = await request({ url: '/wechatToken', method: 'GET', data: { code: $code } });
         wx.setStorageSync('wechatToken', data.token);
         wx.setStorageSync('uid', data.uid);
         resolve();
+    });
+};
+
+const updateUserInfo = ($data) => {
+    return new Promise(async (resolve, reject) => {
+        const res = await request({
+            url: '/udateInfo',
+            data: $data,
+        });
+        switch (res.code) {
+            case 200: resolve(); break;
+            default: reject(); break;
+        }
     });
 };
 
@@ -68,10 +82,18 @@ const getCalendar = () => {
 };
 
 const getCourse = () => {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
         const res = await request({ url: '/jwgl/course' });
-        console.log(res);
-        resolve(res);
+        switch (res.code) {
+            case 200: wx.setStorageSync('course', res.data.rows);
+                wx.setStorageSync('firstDay', res.data.firstDay);
+                wx.setStorageSync('term', res.data.term);
+                wx.setStorageSync('lessonCount', res.data.total);
+                wx.setStorageSync('weekNum', res.data.weekNum);
+                resolve(tool.parseCourse(res.data.rows, 1));
+                break;
+            default: reject(); break;
+        }
     });
 };
 
@@ -86,6 +108,7 @@ const getGrade = () => {
                     res.data[term].forEach((item) => {
                         grade[term].push({
                             name: item.kcmc,
+                            credit: Number(item.xf),
                             score: item.zcj,
                             gpa: Number(item.cjjd),
                             isElective: item.xdfsmc === '选修',
@@ -195,11 +218,10 @@ const getBook = (data) => {
                 };
             });
         };
-        setInfo(res.DetailInfo);
-        setIntro(res.DetailIntro);
-        setCatalog(res.DetailContents);
-        setMap(res.DetailCollection);
-        console.log(book.map);
+        setInfo(res.data.DetailInfo);
+        setIntro(res.data.DetailIntro);
+        setCatalog(res.data.DetailContents);
+        setMap(res.data.DetailCollection);
         resolve(book);
     });
 };
@@ -245,7 +267,7 @@ const getNotice = ($rd) => {
 const getCards = ($currentPage = 0, $isMy = false) => {
     return new Promise(async (resolve) => {
         const res = await request({
-            url: `/gdutwall/get${$isMy ? 'My' : 'All'}Post`,
+            url: `/gdutWall/get${$isMy ? 'My' : 'All'}Post`,
             method: 'GET',
             data: { currentPage: $currentPage },
         });
@@ -291,6 +313,7 @@ const sendCard = ($data) => {
                 qiniu.upload(img, (res) => {
                     resolve(`http://${res.imageURL}`);
                 }, (err) => {
+                    console.log(err);
                     reject(err);
                 }, {
                     uploadURL: 'https://up-z2.qbox.me',
@@ -309,19 +332,23 @@ const sendCard = ($data) => {
                 imgUrl: await uploadImg($data.imgUrl),
             }),
         });
-        switch (res.data.code) {
+        switch (res.code) {
             case 200: resolve(); break;
             default: reject(); break;
         }
     });
 };
 
-const deleteCard = () => {
-    return new Promise(async (resolve) => {
+const deleteCard = ($id) => {
+    return new Promise(async (resolve, reject) => {
         const res = await request({
-            url: '/gdutWall/del',
+            method: 'DELETE',
+            url: `/gdutWall/deletePost?post_id=${$id}`,
         });
-        resolve(res);
+        switch (res.code) {
+            case 200: resolve(); break;
+            default: reject(); break;
+        }
     });
 };
 
@@ -354,6 +381,7 @@ const like = (data) => {
 export default {
     getProofUrl,
     getToken,
+    updateUserInfo,
     login,
     getCalendar,
     getCourse,

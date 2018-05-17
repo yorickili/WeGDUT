@@ -28,11 +28,12 @@
 </template>
 
 <script>
-    import { jointer } from '@/lib';
+    import { jointer, promiser } from '@/lib';
 
     export default {
         props: {
             type: String,
+            index: String,
             id: String,
             avatar: String,
             nickname: String,
@@ -46,6 +47,7 @@
             isComment: Boolean,
             isShowDel: Boolean,
             commentHandler: Function,
+            delete: Function,
         },
         data() {
             return {};
@@ -80,7 +82,13 @@
                 }
             },
             async deleteCard() {
-                console.log('del');
+                await jointer.deleteCard(this.id);
+                await promiser.showModal({
+                    title: '提示',
+                    content: '删除成功!',
+                    showCancel: false,
+                });
+                this.$emit('delete', this.index);
             },
         },
     };

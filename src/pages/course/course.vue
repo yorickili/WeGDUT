@@ -71,7 +71,8 @@
                 })(),
                 weekList: (() => {
                     const arr = [];
-                    for (let i = 0; i < 21; i += 1) {
+                    const length = wx.getStorageSync('weekNum');
+                    for (let i = 0; i < length; i += 1) {
                         arr.push(`第${i + 1}周`);
                     }
                     return arr;
@@ -85,21 +86,14 @@
         },
         methods: {
             async getCourse() {
-                const res = await jointer.getCourse();
-                const next = () => {
-                    wx.setStorageSync('course', res.data.rows);
-                    wx.setStorageSync('firstDay', res.data.firstDay);
-                    wx.setStorageSync('term', res.data.term);
-                    wx.setStorageSync('lessonCount', res.data.total);
-                    this.course = this.parseCourse(res.data.rows, 1);
-                };
-                switch (res.code) {
-                    case 200: next(); break;
-                    default: {
-                        const { confirm } = await promiser.showModal({ title: '提示', content: '您未登录，点击确定去登录！' });
-                        if (confirm) { this.go2login(); }
-                        break;
-                    }
+                try {
+                    this.course = await jointer.getCourse();
+                } catch (e) {
+                    const { confirm } = await promiser.showModal({
+                        title: '提示',
+                        content: '您未登录，点击确定去登录！',
+                    });
+                    if (confirm) { this.go2login(); }
                 }
             },
             parseCourse($rows, week) {
