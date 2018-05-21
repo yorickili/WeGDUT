@@ -6,11 +6,11 @@
                 <div class="zan-cell__bd">制作团队</div>
                 <div class="zan-cell__ft">维生数工作室</div>
             </div>
-            <div class="zan-cell zan-cell--access" @click="previewQRCode()">
+            <div class="zan-cell">
                 <div class="zan-cell__bd">公众号</div>
                 <div class="zan-cell__ft">vtmers</div>
             </div>
-            <div class="zan-cell zan-cell--access" @click="previewQRCode()">
+            <div class="zan-cell zan-cell--access" @click="previewQRCode('admire')">
                 <div class="zan-cell__bd">请我们吃糖果~</div>
                 <div class="zan-cell__ft"></div>
             </div>
@@ -33,7 +33,7 @@
 
 <script>
     import Button from '@/components/Button';
-    import { promiser } from '@/lib';
+    import { promiser, jointer } from '@/lib';
 
     export default {
         components: { Button },
@@ -46,13 +46,18 @@
             };
         },
         methods: {
-            previewQRCode() {
+            previewQRCode(type) {
+                const code = {
+                    qr: 'http://oox3shbsf.bkt.clouddn.com/tmp_88d913cde1d6243e40508487cfdb4fb3.jpg',
+                    admire: 'http://oox3shbsf.bkt.clouddn.com/tmp_190d92cd5ba488ee0edcd38c77493e51.jpg',
+                };
                 wx.previewImage({
-                    urls: ['https://mp.weixin.qq.com/debug/wxadoc/dev/image/demo.jpg?t=2018314'],
+                    urls: [code[type]],
                 });
             },
             async sendOpinion() {
                 if (this.opinion.length > 4) {
+                    await jointer.sendSuggestion(this.opinion);
                     await promiser.showModal({
                         title: '提示',
                         content: '感谢您的反馈~',

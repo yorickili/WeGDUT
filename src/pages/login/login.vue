@@ -1,5 +1,6 @@
 <template>
     <div class="container login-container">
+        <img class="logo" src="/static/icon/logo.png" />
         <div class="zan-panel">
             <div class="zan-cell zan-field">
                 <div class="zan-cell__hd zan-field__title">学号</div>
@@ -18,7 +19,8 @@
                 <div class="zan-cell__ft" />
             </div>
         </div>
-        <Button :disabled="!(id && password && proof)" @click="login()" />
+        <Button stylus="position: relative; top: 100px;" :disabled="!(id && password && proof)" @click="login()" />
+        <img class="bg" src="/static/icon/bg.png">
     </div>
 </template>
 

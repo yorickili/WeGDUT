@@ -15,7 +15,6 @@
         },
         async beforeMount() {
             this.article = (await jointer.getNotice(this.$mp.query.rd)).replace(/<a.*?<\/a>/g, '');
-            console.log(this.article);
         },
     };
 </script>
@@ -24,6 +23,7 @@
     .notice-container {
         width: 94%;
         margin: 0 3%;
+        font-size: 15px;
         div {
             width: 100%;
             height: 100%;

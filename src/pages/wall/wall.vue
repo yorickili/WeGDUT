@@ -39,7 +39,7 @@
 <script>
     import Card from '@/components/Card';
     import Mover from '@/components/Mover';
-    import { jointer } from '@/lib';
+    import { jointer, tool } from '@/lib';
 
     export default {
         components: { Card, Mover },
@@ -52,7 +52,8 @@
                 avatar: '',
                 nickname: '',
                 cards: [],
-                page: 0,
+                stamp: Date.now(),
+                isAll: false,
                 isMy: false,
             };
         },
@@ -61,21 +62,28 @@
                 return `贴卡片&${this.isMy ? '全部' : '我的'}卡片`;
             },
         },
+        watch: {
+            cards(now) {
+                if (now.length > 0) this.stamp = now[now.length - 1].stamp * 1000;
+            },
+        },
         beforeMount() {
-            this.getCards(0, false);
+            this.getCards(tool.formatTime(Date.now()), false);
         },
         methods: {
-            getCards(page, isMy) {
+            getCards(time, isMy, isRefresh = false) {
                 this.isMy = isMy;
                 return new Promise(async (resolve) => {
-                    this.cards = await jointer.getCards(page, isMy);
+                    const cards = await jointer.getCards(time, isMy);
+                    if (cards.length < 20) this.isAll = true;
+                    this.cards = isRefresh ? cards : this.cards.concat(cards);
                     resolve();
                 });
             },
             moverHandler(index) {
                 switch (index) {
                     case 0: wx.navigateTo({ url: '/pages/painter/painter' }); break;
-                    case 1: this.getCards(0, !this.isMy); break;
+                    case 1: this.getCards(tool.formatTime(Date.now()), !this.isMy, true); break;
                     default: break;
                 }
             },
@@ -84,8 +92,20 @@
             },
         },
         async onPullDownRefresh() {
-            await this.getCards(0, this.isMy);
+            await this.getCards(tool.formatTime(Date.now()), this.isMy, true);
+            this.isAll = false;
             wx.stopPullDownRefresh();
+        },
+        onReachBottom() {
+            if (!this.isAll) {
+                this.getCards(tool.formatTime(this.stamp), this.isMy);
+            }
+        },
+        onShareAppMessage() {
+            return {
+                title: '来这里认识更多有趣的灵魂~',
+                path: '/pages/wall/wall',
+            };
         },
     };
 </script>

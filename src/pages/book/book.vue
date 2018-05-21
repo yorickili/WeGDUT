@@ -32,13 +32,14 @@
                 </scroll-view>
             </swiper-item>
             <swiper-item>
-                <div class="map scroller">
-                    <div class="card" v-for="(item, index) in map" :key="index">
+                <div class="scroller">
+                    <div class="map" v-for="(item, index) in map" :key="index">
                         <div class="lib">{{item.lib}}</div>
                         <div class="info">
                             <div class="site">{{item.site}}</div>
                             <div class="status">{{item.status}}</div>
                         </div>
+                        <div class="line"></div>
                     </div>
                 </div>
             </swiper-item>
@@ -96,6 +97,12 @@
                 if (e.selectedId >= 0) this.current = e.selectedId;
                 else if (e.mp) this.current = e.mp.detail.current;
             },
+        },
+        onShareAppMessage() {
+            return {
+                title: `推荐【${this.name}】这本书给你~`,
+                path: `/pages/book/book?book=${this.$root.$mp.query.book}`,
+            };
         },
     };
 </script>

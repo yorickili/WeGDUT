@@ -7,7 +7,7 @@
                     <input
                         type="text"
                         class="weui-search-bar__input"
-                        placeholder="搜索"
+                        placeholder="输入关键字搜索图书"
                         v-model="word"
                         @confirm="search"
                     />

@@ -8,7 +8,7 @@
             </div>
             <div class="zan-cell zan-field">
                 <div class="zan-cell__hd zan-field__title">考号</div>
-                <input class="zan-field__input zan-cell__bd" type="number" placeholder="请输入学号" v-model="id" />
+                <input class="zan-field__input zan-cell__bd" type="number" placeholder="请输入考号" v-model="id" />
                 <div class="zan-cell__ft" />
             </div>
             <div class="zan-cell zan-field">
@@ -18,7 +18,7 @@
                 <div class="zan-cell__ft" />
             </div>
         </div>
-        <Button :disabled="!(name && id && proof)" @click="query" />
+        <Button  @click="query" />
         <div class="list" v-if="visible.list">
             <div class="zan-cell" v-for="item in list" :key="item.index">
                 <div class="icon zan-cell__icon zan-icon zan-icon-description" />

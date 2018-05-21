@@ -1,8 +1,7 @@
 <template>
     <button
-        class="button-container"
         :class="className"
-        :style="stylus"
+        :style="'background: #41AE8E; border-radius: 10px;' + stylus"
         :open-type="openType"
         @getuserinfo="(e) => disabled ? null : $emit('getUserInfo', e)"
         @click="disabled ? null : $emit('click')"
@@ -26,7 +25,7 @@
         computed: {
             className() {
                 const prefix = 'zan-btn--';
-                const className = ['zan-btn', prefix + this.type, prefix + this.size].concat(
+                const className = ['button-container', 'zan-btn', prefix + this.type, prefix + this.size].concat(
                     this.disabled ? [`${prefix}disabled`] : [],
                     this.isPlain ? [`${prefix}plain`] : [],
                     this.isLoading ? [`${prefix}loading`] : [],
@@ -38,5 +37,8 @@
 </script>
 
 <style lang="less">
-
+    .zan-btn {
+        color: #FFFFFF;
+        border-radius: 10px;
+    }
 </style>

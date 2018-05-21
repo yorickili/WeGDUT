@@ -54,10 +54,10 @@
         },
         computed: {
             commentIcon() {
-                return `/static/icon/评论${this.isComment ? 2 : 1}.png`;
+                return `/static/icon/comment${this.isComment ? 2 : 1}.png`;
             },
             likeIcon() {
-                return `/static/icon/点赞${this.isLike ? 2 : 1}.png`;
+                return `/static/icon/like${this.isLike ? 2 : 1}.png`;
             },
         },
         methods: {
@@ -72,7 +72,7 @@
                 const code = await jointer.like({ id: this.id });
                 switch (code) {
                     case 200: this.isLike = true; this.likes += 1; break;
-                    case 500: this.isLike = false; this.likes -= 1; break;
+                    case 201: this.isLike = false; this.likes -= 1; break;
                     default: break;
                 }
             },
@@ -82,13 +82,19 @@
                 }
             },
             async deleteCard() {
-                await jointer.deleteCard(this.id);
-                await promiser.showModal({
+                const { confirm } = await promiser.showModal({
                     title: '提示',
-                    content: '删除成功!',
-                    showCancel: false,
+                    content: '确定删除这张卡片吗？',
                 });
-                this.$emit('delete', this.index);
+                if (confirm) {
+                    await jointer.deleteCard(this.id);
+                    await promiser.showModal({
+                        title: '提示',
+                        content: '删除成功!',
+                        showCancel: false,
+                    });
+                    this.$emit('delete', this.index);
+                }
             },
         },
     };

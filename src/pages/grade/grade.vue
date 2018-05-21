@@ -8,9 +8,27 @@
         <div class="chart">
             <canvas canvas-id="pie" style="width: 100px; height: 100px;"></canvas>
             <div class="labels">
-                <div class="label" v-for="(item, index) in labels" :key="index">
-                    <div class="circle" :style="{ background: item.color }"></div>
-                    <div class="text">{{item.text}}</div>
+                <div class="label">
+                    <div class="circle" style="background: #93D4E7"></div>
+                    <div class="text">90 - 100</div>
+                </div>
+                <div class="label">
+                    <div class="circle" style="background: #A1DD9F"></div>
+                    <div class="text">80 - 89</div>
+                </div>
+                <div class="label">
+                    <div class="circle" style="background: #FAE497"></div>
+                    <div class="text">70 - 79</div>
+                </div>
+            </div>
+            <div class="labels" style="padding-left: 0; height: 35%; margin-top: -7.5%;">
+                <div class="label">
+                    <div class="circle" style="background: #FEACAF"></div>
+                    <div class="text">60 - 69</div>
+                </div>
+                <div class="label">
+                    <div class="circle" style="background: #F98CB1"></div>
+                    <div class="text">60 以下</div>
                 </div>
             </div>
         </div>
@@ -42,11 +60,11 @@
                 termIndex: 0,
                 termList: ['全部', '大一上', '大一下', '大二上', '大二下', '大三上', '大三下', '大四上', '大四下'],
                 labels: [
-                    { color: '#F75C2F', text: '90 - 100' },
-                    { color: '#A0D8EF', text: '80 - 89' },
-                    { color: '#EFCD9A', text: '70 - 79' },
-                    { color: '#38B48B', text: '60 - 69' },
-                    { color: '#84A2D4', text: '0 - 59' },
+                    { color: '#93D4E7', text: '90 - 100' },
+                    { color: '#A1DD9F', text: '80 - 89' },
+                    { color: '#FAE497', text: '70 - 79' },
+                    { color: '#FEACAF', text: '60 - 69' },
+                    { color: '#F98CB1', text: '0 - 59' },
                 ],
             };
         },
@@ -58,7 +76,6 @@
                 if (list) {
                     list.forEach((item) => {
                         if (!item.isElective) {
-                            console.log(item.gpa, item.credit);
                             gpa += (item.gpa * item.credit);
                             num += item.credit;
                         }
@@ -121,17 +138,23 @@
                 const percent = [...this.percent];
                 const drawSector = (start, end, color) => {
                     pencil.beginPath();
-                    pencil.moveTo(50, 50);
-                    pencil.arc(50, 50, 40, start * Math.PI * 2, end * Math.PI * 2);
+                    pencil.moveTo(40, 50);
+                    pencil.arc(40, 50, 40, start * Math.PI * 2, end * Math.PI * 2);
                     pencil.setFillStyle(color);
                     pencil.closePath();
                     pencil.fill();
                 };
-                drawSector(0, percent[0], '#F75C2F');
-                drawSector(percent[0], percent[1], '#A0D8EF');
-                drawSector(percent[1], percent[2], '#EFCD9A');
-                drawSector(percent[2], percent[3], '#38B48B');
-                drawSector(percent[3], 1, '#84A2D4');
+                drawSector(0, percent[0], '#93D4E7');
+                drawSector(percent[0], percent[1], '#A1DD9F');
+                drawSector(percent[1], percent[2], '#FAE497');
+                drawSector(percent[2], percent[3], '#FEACAF');
+                drawSector(percent[3], 1, '#F98CB1');
+                pencil.beginPath();
+                pencil.moveTo(40, 50);
+                pencil.arc(40, 50, 20, 0, Math.PI * 2);
+                pencil.setFillStyle('#FFFFFF');
+                pencil.closePath();
+                pencil.fill();
                 pencil.draw();
             },
             moverHandler(index) {
@@ -141,6 +164,12 @@
                     default: break;
                 }
             },
+        },
+        onShareAppMessage() {
+            return {
+                title: `我的${this.termList[this.termIndex]}绩点${this.gpa},不服来比比~`,
+                path: '/pages/grade/grade',
+            };
         },
     };
 </script>

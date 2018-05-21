@@ -13,30 +13,20 @@ page {
 }
 
 // components
+
 .button-container {
     background-color: @mainColor;
-    color: #FFFFFF;
-    border-radius: 5px;
     width: 80%;
     font-size: 15px;
     margin: 20px 10%;
 }
 .card-container {
-    width: 90%;
-    margin: 0 5% 10px;
-    border-radius: 10px;
-    background: #FFFFFF;
-    overflow: hidden;
+    &:extend(.card);
+    width: 710rpx;
+    padding: 15px 0 0;
     position: relative;
-    .close {
-        font-size: 30px;
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        color: red;
-    }
     .main {
-        padding: 4% 4% 0;
+        margin: 0 15px;
         .header {
             &:extend(.flex);
             width: 270px;
@@ -80,7 +70,7 @@ page {
         color: @fontColor;
         border-top: 1px solid @bgColor;
         div {
-            &:extend(.flex);;
+            &:extend(.flex);
             flex: 1;
             height: 100%;
             line-height: 20px;
@@ -88,9 +78,16 @@ page {
             img {
                 width: 15px;
                 height: 15px;
-                margin: 0 5px;
+                margin-right: 5px;
             }
         }
+    }
+    .close {
+        font-size: 30px;
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        color: red;
     }
 }
 .mover-container {
@@ -124,7 +121,7 @@ page {
             font-size: 15px;
         }
         .confirm {
-            color: #29BB73;
+            color: #41AE8E;
             display: flex;
             justify-content: flex-end;
         }
@@ -132,8 +129,9 @@ page {
     .picker {
         width: 100%;
         height: 200px;
+        background: rgba(255, 255, 255, 1);
         .indicator {
-            background: rgba(255, 255, 255, 0.5)
+            background: rgba(255, 255, 255, 0.5);
         }
         .item {
             width: 100%;
@@ -173,13 +171,16 @@ page {
     .header {
         &:extend(.flex);
         width: 100%;
-        height: 70rpx;
+        height: 35px;
         background: #FFFFFF;
         position: relative;
         .blank {
-            width: 80rpx;
-            height: 70rpx;
+            width: 30px;
+            height: 35px;
             background: #FFFFFF;
+            color: @mainColor;
+            &:extend(.flex);
+            font-size: 18px;
         }
         .week-wrapper {
             &:extend(.flexC);
@@ -188,7 +189,7 @@ page {
             .week {
                 &:extend(.flexC);
                 width: 100%;
-                height: 70rpx;
+                height: 35px;
                 background: #FFFFFF;
             }
         }
@@ -199,7 +200,7 @@ page {
         width: 100%;
         .lesson-time-wrapper {
             &:extend(.flexC);
-            width: 70rpx;
+            width: 30px;
             height: 100%;
             .lesson-time {
                 &:extend(.flexC);
@@ -286,24 +287,38 @@ page {
     }
 }
 .login-container {
+    .logo {
+        width: 128rpx;
+        height: 128rpx;
+        position: absolute;
+        top: 20px;
+        left: 311rpx;
+    }
     .zan-panel {
-        margin-top: 50px;
+        position: relative;
+        top: 100px;
     }
     .proof {
         width: 100px;
         height: 30px;
     }
+    .bg {
+        width: 100%;
+        height: 250px;
+        position: fixed;
+        bottom: 0;
+    }
 }
 .about-container {
     img {
-        width: 80px;
-        height: 80px;
+        width: 128rpx;
+        height: 128rpx;
         position: absolute;
         top: 20px;
-        left: 40%;
+        left: 311rpx;
     }
     .about {
-        margin-top: 120px;
+        margin-top: 100px;
     }
     .opinion {
         width: 80%;
@@ -319,10 +334,10 @@ page {
     position: relative;
     top: 2%;
     .comments {
-        width: 90%;
+        width: 710rpx;
         background: #FFFFFF;
-        margin: 10px 5%;
-        border-radius: 10px;
+        margin: 10px 20rpx;
+        border-radius: 17px;
         padding: 0;
         .comment-container {
             width: 90%;
@@ -405,12 +420,8 @@ page {
         position: relative;
         top: 30px;
         .card {
-            width: 74%;
             height: 100px;
-            margin: 0 5% 10px;
-            padding: 10px 8%;
-            background: #FFFFFF;
-            border-radius: 10px;
+            &:extend(.card);
             &:extend(.flexC);
             align-items: flex-start;
             div {
@@ -426,9 +437,8 @@ page {
                     width: 5px;
                     height: 20px;
                     background: @mainColor;
-                    position: absolute;
-                    top: 6px;
-                    left: -15px;
+                    float: left;
+                    margin: 5px 8px 0 0;
                 }
             }
             .time {
@@ -437,11 +447,8 @@ page {
             .site {
                 width: 100%;
                 font-size: 14px;
-                position: relative;
                 .surplus {
-                    position: absolute;
-                    top: 0;
-                    right: -10px;
+                    float: right;
                     span {
                         font-size: 30px;
                     }
@@ -468,7 +475,7 @@ page {
     .cover {
         width: 100%;
         height: 35%;
-        background: #29BB73;
+        background: #41AE8E;
         color: #FFFFFF;
         .text {
             position: relative;
@@ -492,10 +499,10 @@ page {
         }
     }
     .chart {
+        &:extend(.flex);
         width: 76%;
         height: 125px;
-        padding-left: 10%;
-        &:extend(.flex);
+        padding-left: 8%;
         justify-content: flex-start;
         background: #FFFFFF;
         border-radius: 10px;
@@ -503,14 +510,14 @@ page {
         left: 7%;
         top: 24%;
         .labels {
-            width: 40%;
-            height: 70%;
-            padding-left: 25%;
+            width: 35%;
+            height: 50%;
+            padding-left: 8%;
             font-size: 12px;
             &:extend(.flexC);
             .label {
                 width: 100%;
-                padding-bottom: 5px;
+                flex: 1;
                 &:extend(.flex);
                 justify-content: flex-start;
                 .circle {
@@ -533,7 +540,7 @@ page {
         left: 5%;
         .zan-cell {
             .icon {
-                color: #29BB73;
+                color: #41AE8E;
                 font-size: 18px;
                 margin-right: 20px;
             }
@@ -547,12 +554,9 @@ page {
         width: 100%;
         position: relative;
         .card {
-            width: 80%;
+            margin-top: 10px;
             height: 70px;
-            padding: 10px 5%;
-            margin: 10px 5%;
-            border-radius: 10px;
-            background: #FFFFFF;
+            &:extend(.card);
             &:extend(.flex);
             >div {
                 height: 100%;
@@ -612,8 +616,8 @@ page {
         min-width: 25%;
     }
     .zan-tab__item--selected .zan-tab__title {
-        color: #29BB73;
-        border-bottom:4rpx solid #29BB73;
+        color: #41AE8E;
+        border-bottom:4rpx solid #41AE8E;
     }
     swiper{
         width: 100%;
@@ -621,23 +625,15 @@ page {
         position: absolute;
         top: 50px;
         .info-wrapper {
-            .img{
-                width: 90%;
-                height: 300px;
-                margin: 15px 5% 30px;
-                border-radius: 10px;
-                background: #FFFFFF;
-                align-items: center;
-                justify-content: center;
-                display: flex;
+            .img {
+                &:extend(.card);
+                &:extend(.flex);
+                margin-top: 15px;
             }
             .info {
-                width: 80%;
+                &:extend(.card);
                 height: 150px;
-                margin: 0 5% 10px;
-                padding: 15px 5%;
-                border-radius: 10px;
-                background: #FFFFFF;
+                margin-top: 20px;
                 display: flex;
                 justify-content: center;
                 flex-direction: column;
@@ -653,23 +649,22 @@ page {
                     margin: 0 10% 10px;
                     color: #353535;
                     font-size: 25px;
+                    text-align: center;
                 }
             }
         }
         .scroller {
-            width: 80%;
+            &:extend(.card);
             height: 480px;
-            margin: 15px 5%;
-            padding: 15px 5%;
-            border-radius: 10px;
-            background: #FFFFFF;
+            margin-top: 15px;
             color: #353535;
             font-size: 15px;
-            .card {
+            .map {
                 width: 100%;
                 height: 45px;
                 padding-top: 5px;
-                border-bottom: 1px solid #999999;
+                letter-spacing: 2px;
+                position: relative;
                 .lib {
                     width: 50%;
                     float: left;
@@ -682,9 +677,18 @@ page {
                     text-align: right;
                     align-items: flex-end;
                     .status {
+                        margin-top: 5px;
                         font-size: 12px;
-                        color: #353535;
+                        color: #888888;
                     }
+                }
+                .line {
+                    width: 710rpx;
+                    height: 2px;
+                    background: #E5E5E5;
+                    position: absolute;
+                    left: -30rpx;
+                    bottom: 0;
                 }
             }
         }
@@ -746,11 +750,8 @@ page {
         position: relative;
         top: 10px;
         .card{
-            width: 80%;
-            padding: 10px 5%;
-            margin: 10px 5%;
-            border-radius: 10px;
-            background: #FFFFFF;
+            margin-top: 10px;
+            &:extend(.card);
             &:extend(.flexC);
             .name{
                 width: 100%;
@@ -764,9 +765,8 @@ page {
                     width: 5px;
                     height: 20px;
                     background: @mainColor;
-                    position: absolute;
-                    top: 6px;
-                    left: -1px;
+                    float: left;
+                    margin: 1px 5px 0 -1px;
                 }
             }
             .info{

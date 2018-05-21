@@ -27,6 +27,7 @@
         <div class="comment-handler" v-show="visible.commentHandler">
             <input
                 type="text"
+                maxlength="50"
                 placeholder="想说......"
                 v-model="comment"
                 cursor-spacing="50"
@@ -36,13 +37,13 @@
                 <Button
                     text="匿名发送"
                     size="small"
-                    stylus="width: 30%; height: 32px; margin: 10px 10%; padding: 0; border-radius: 5px;"
-                    @click="sendComment()"
+                    stylus="width: 30%; height: 32px; line-height: 30px; margin: 10px 10%; padding: 0; border-radius: 10px;"
+                    @click="sendComment(true)"
                 />
                 <Button
                     text="发送"
                     size="small"
-                    stylus="width: 30%; height: 32px; margin: 10px 10%; padding: 0; border-radius: 5px;"
+                    stylus="width: 30%; height: 32px; line-height: 30px; margin: 10px 10%; padding: 0; border-radius: 10px;"
                     openType="getUserInfo"
                     @getUserInfo="getUserInfo"
                 />
@@ -88,14 +89,34 @@
             }
         },
         methods: {
-            async sendComment($avatar = 'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.vyTbWxZnOxIu3f6051380cd24c57ba5aba91693340ba.png', $nickname = '匿名用户') {
-                this.comments.push({ avatar: $avatar, nickname: $nickname, text: this.comment });
-                jointer.sendComment({ content: this.comment, post_id: this.id, to_id: '5a698425869d0060e7f76db2' });
+            async sendComment($isAnon = true, userInfo) {
+                await jointer.sendComment({
+                    content: this.comment,
+                    post_id: this.id,
+                    to_id: '5a698425869d0060e7f76db2',
+                    isAnon: $isAnon,
+                });
+                this.visible.commentHandler = false;
+                this.comments.push({
+                    text: this.comment,
+                    avatar: $isAnon ? 'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.vyTbWxZnOxIu3f6051380cd24c57ba5aba91693340ba.png' : userInfo.avatarUrl,
+                    nickname: $isAnon ? '匿名同学' : userInfo.nickName,
+                });
             },
             getUserInfo(e) {
                 const { errMsg, userInfo } = e.mp.detail;
-                if (errMsg === 'getUserInfo:ok') this.sendComment(userInfo.avatarUrl, userInfo.nickname);
-                else wx.showToast({ title: '允许WeGDUT获取您的信息后才能发送评论~', icon: 'none' });
+                if (errMsg === 'getUserInfo:ok') {
+                    jointer.updateUserInfo({
+                        avatarUrl: userInfo.avatarUrl,
+                        nickName: userInfo.nickName,
+                    });
+                    this.sendComment(false, userInfo);
+                } else {
+                    wx.showToast({
+                        title: '允许WeGDUT获取您的信息后才能发送评论~',
+                        icon: 'none',
+                    });
+                }
             },
         },
     };

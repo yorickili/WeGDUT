@@ -10,14 +10,13 @@ const request = (params) => {
             header: params.header || { Authorization: wx.getStorageSync('token') || '' },
             data: { ...params.data },
             success: (res) => {
-                console.log(res);
                 switch (res.data.code) {
                     case 200: resolve(res.data); break;
+                    case 201: resolve(res.data); break;
                     case 402: wx.showToast({ title: '402 - 未获取到token! 请重新登录~', icon: 'none' }); resolve(res.data); break;
                     case 403: wx.showToast({ title: '403 - 缺少参数！请反馈您的问题给我们，谢谢~', icon: 'none' }); resolve(res.data); break;
-                    case 404: wx.showToast({ title: '404 - 部分数据未找到！请反馈您的问题给我们，谢谢~', icon: 'none' }); resolve(res.data); break;
-                    case 500: if (params.url !== '/gdutWall/like') wx.showToast({ title: '500 - 内部错误！请反馈您的问题给我们，谢谢~', icon: 'none' });
-                        resolve(res.data); break;
+                    case 404: wx.showToast({ title: '404 - 部分数据未找到！请尝试重新登陆，谢谢~', icon: 'none' }); resolve(res.data); break;
+                    case 500: wx.showToast({ title: '500 - 内部错误！请尝试重新登陆，谢谢~', icon: 'none' }); resolve(res.data); break;
                     case 505: wx.showToast({ title: '505 - cookie过期！请重新登录~', icon: 'none' }); resolve(res.data); break;
                     default: reject(); break;
                 }
@@ -40,7 +39,7 @@ const getProofUrl = () => {
 const getToken = ($code) => {
     return new Promise(async (resolve) => {
         const { data } = await request({ url: '/wechatToken', method: 'GET', data: { code: $code } });
-        wx.setStorageSync('wechatToken', data.token);
+        wx.setStorageSync('token', data.token);
         wx.setStorageSync('uid', data.uid);
         resolve();
     });
@@ -49,7 +48,7 @@ const getToken = ($code) => {
 const updateUserInfo = ($data) => {
     return new Promise(async (resolve, reject) => {
         const res = await request({
-            url: '/udateInfo',
+            url: '/updateInfo',
             data: $data,
         });
         switch (res.code) {
@@ -63,7 +62,7 @@ const login = ($data) => {
     return new Promise(async (resolve) => {
         const res = await request({
             url: '/jwgl/login',
-            header: { Authorization: wx.getStorageSync('wechatToken') || '' },
+            header: { Authorization: wx.getStorageSync('token') || '' },
             data: Object.assign($data, { cookie: wx.getStorageSync('cookie'), ua: wx.getStorageSync('ua') }),
         });
         wx.setStorageSync('token', res.data.token);
@@ -90,7 +89,7 @@ const getCourse = () => {
                 wx.setStorageSync('term', res.data.term);
                 wx.setStorageSync('lessonCount', res.data.total);
                 wx.setStorageSync('weekNum', res.data.weekNum);
-                resolve(tool.parseCourse(res.data.rows, 1));
+                resolve(res.data.rows);
                 break;
             default: reject(); break;
         }
@@ -111,7 +110,7 @@ const getGrade = () => {
                             credit: Number(item.xf),
                             score: item.zcj,
                             gpa: Number(item.cjjd),
-                            isElective: item.xdfsmc === '选修',
+                            isElective: item.kcdlmc === '公共选修课',
                         });
                     });
                 });
@@ -264,19 +263,20 @@ const getNotice = ($rd) => {
     });
 };
 
-const getCards = ($currentPage = 0, $isMy = false) => {
+const getCards = ($time = 0, $isMy = false) => {
     return new Promise(async (resolve) => {
         const res = await request({
             url: `/gdutWall/get${$isMy ? 'My' : 'All'}Post`,
             method: 'GET',
-            data: { currentPage: $currentPage },
+            data: { time: $time },
         });
         const cards = res.data.map((item) => {
             /* eslint-disable no-underscore-dangle */
             return {
                 id: item._id,
-                avatar: item.user_id.avatarUrl,
-                nickname: item.user_id.nickName,
+                avatar: item.isAnon ? 'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.vyTbWxZnOxIu3f6051380cd24c57ba5aba91693340ba.png' : item.user_id.avatarUrl,
+                nickname: item.isAnon ? '匿名同学' : item.user_id.nickName,
+                stamp: item.createdAt,
                 time: tool.getLapseTime(item.createdAt * 1000),
                 device: item.phone || '未知设备',
                 text: item.content,
@@ -285,8 +285,8 @@ const getCards = ($currentPage = 0, $isMy = false) => {
                 isLike: item.isLiked,
                 comments: item.comments.map((comment) => {
                     return {
-                        avatar: comment.from_id.avatarUrl,
-                        nickname: comment.from_id.nickName,
+                        avatar: comment.isAnon ? 'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.vyTbWxZnOxIu3f6051380cd24c57ba5aba91693340ba.png' : comment.from_id.avatarUrl,
+                        nickname: comment.isAnon ? '匿名同学' : comment.from_id.nickName,
                         text: comment.content,
                     };
                 }),
@@ -301,7 +301,7 @@ const getCards = ($currentPage = 0, $isMy = false) => {
                     return mark;
                 })(),
             };
-        });
+        }) || [];
         resolve(cards);
     });
 };
@@ -353,13 +353,14 @@ const deleteCard = ($id) => {
 };
 
 const sendComment = (data) => {
-    return new Promise(async () => {
+    return new Promise(async (resolve, reject) => {
         const res = await request({
             url: '/gdutWall/comment',
             data,
         });
-        if (res.data.code === 200) {
-            console.log(200);
+        switch (res.code) {
+            case 200: resolve(); break;
+            default: reject(); break;
         }
     });
 };
@@ -372,9 +373,20 @@ const like = (data) => {
         });
         switch (res.code) {
             case 200: resolve(res.code); break;
+            case 201: resolve(res.code); break;
             case 500: resolve(res.code); break;
             default: break;
         }
+    });
+};
+
+const sendSuggestion = (suggestion) => {
+    return new Promise((resolve) => {
+        request({
+            url: '/suggestion',
+            data: { suggestion },
+        });
+        resolve();
     });
 };
 
@@ -397,4 +409,5 @@ export default {
     deleteCard,
     sendComment,
     like,
+    sendSuggestion,
 };

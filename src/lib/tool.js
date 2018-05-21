@@ -152,4 +152,15 @@ const btoa = (input) => {
             }
 };
 
-export default { getWeekday, parseCourse, getCalendar, getLapseTime, quickSort, btoa };
+const formatTime = (stamp) => {
+    const date = new Date(stamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+};
+
+export default { getWeekday, parseCourse, getCalendar, getLapseTime, quickSort, btoa, formatTime };
