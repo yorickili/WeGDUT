@@ -6,9 +6,9 @@
 
     export default {
         async created() {
-            if (!wx.getStorageSync('courseMark')) {
+            if (!wx.getStorageSync('mark180531')) {
                 wx.clearStorageSync();
-                wx.setStorageSync('courseMark', true);
+                wx.setStorageSync('mark180531', true);
             }
             const { code } = await promiser.login();
             jointer.getToken(code);

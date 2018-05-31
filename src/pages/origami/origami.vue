@@ -1,22 +1,12 @@
 <template>
     <div class="container origami-container">
         <Card
-            type="origami"
-            :id="id"
-            :avatar="avatar"
-            :nickname="nickname"
-            :time="time"
-            :device="device"
-            :text="text"
-            :img="img"
-            :likes="likes"
-            :isLike="isLike"
-            :comments="comments"
-            :isComment="isComment"
+            :type="1"
+            :index="index"
             @commentHandler="visible.commentHandler = !visible.commentHandler"
         />
         <div class="comments">
-            <div class="comment-container" v-for="(item, index) in comments" :key="index">
+            <div class="comment-container" v-for="(item, index) in card.comments" :key="index">
                 <img class="avatar" :src="item.avatar" />
                 <div class="comment">
                     <span>{{item.nickname}}</span>
@@ -55,52 +45,48 @@
 <script>
     import Card from '@/components/Card';
     import Button from '@/components/Button';
-    import { jointer } from '@/lib';
+    import { anon } from '@/config';
+    import { jointer, store } from '@/lib';
 
     export default {
+        store,
         components: { Card, Button },
         data() {
             return {
-                id: '',
-                avatar: '',
-                nickname: '',
-                time: '',
-                device: '',
-                text: '',
-                img: '',
-                likes: 0,
-                isLike: false,
-                comments: [],
-                isComment: false,
-                visible: {
-                    commentHandler: false,
-                },
+                index: 0,
                 comment: '',
+                visible: { commentHandler: false },
             };
         },
-        beforeMount() {
-            if (this.$root.$mp.query.detail) {
-                const detail = JSON.parse(this.$root.$mp.query.detail);
-                ['id', 'avatar', 'nickname', 'time', 'device', 'text', 'img', 'likes', 'isLike', 'comments', 'isComment'].forEach((attr) => {
-                    this[attr] = detail[attr];
-                });
-                this.visible.commentHandler = false;
-                this.comment = '';
-            }
+        computed: {
+            card() {
+                return this.$store.state.cards[this.index] || {};
+            },
+        },
+        onShow() {
+            this.index = this.$root.$mp.query.index || 0;
+        },
+        onHide() {
+            this.card = {};
+            this.visible.commentHandler = false;
+            this.comment = '';
         },
         methods: {
             async sendComment($isAnon = true, userInfo) {
                 await jointer.sendComment({
                     content: this.comment,
-                    post_id: this.id,
+                    post_id: this.card.id,
                     to_id: '5a698425869d0060e7f76db2',
                     isAnon: $isAnon,
                 });
                 this.visible.commentHandler = false;
-                this.comments.push({
-                    text: this.comment,
-                    avatar: $isAnon ? 'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.vyTbWxZnOxIu3f6051380cd24c57ba5aba91693340ba.png' : userInfo.avatarUrl,
-                    nickname: $isAnon ? '匿名同学' : userInfo.nickName,
+                this.$store.commit('addComment', {
+                    index: this.index,
+                    comment: {
+                        text: this.comment,
+                        avatar: $isAnon ? anon.avatar : userInfo.avatarUrl,
+                        nickname: $isAnon ? anon.nickname : userInfo.nickName,
+                    },
                 });
             },
             getUserInfo(e) {

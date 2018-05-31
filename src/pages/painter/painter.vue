@@ -23,10 +23,11 @@
 
 <script>
     import Button from '@/components/Button';
-    import { promiser, jointer } from '@/lib';
+    import { promiser, jointer, store } from '@/lib';
 
     export default {
         components: { Button },
+        store,
         data() {
             return {
                 img: '',

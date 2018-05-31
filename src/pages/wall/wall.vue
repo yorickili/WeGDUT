@@ -2,8 +2,8 @@
     <movable-area class="container wall-container">
         <div class="cover">
             <swiper :circular="true" :autoplay="true">
-                <swiper-item v-for="cover in covers" :key="cover.index">
-                    <img :src="cover" />
+                <swiper-item v-for="(item, index) in covers" :key="index">
+                    <img :src="item" />
                 </swiper-item>
             </swiper>
             <div class="user">
@@ -13,23 +13,10 @@
         </div>
         <div class="cards">
             <Card
-                v-for="(card, index) in cards"
+                v-for="(item, index) in cards"
                 :key="index"
-                type="wall"
+                :type="type"
                 :index="index"
-                :id="card.id"
-                :avatar="card.avatar"
-                :nickname="card.nickname"
-                :device="card.device"
-                :time = "card.time"
-                :text="card.text"
-                :img="card.img"
-                :likes="card.likes"
-                :isLike="card.isLike"
-                :comments="card.comments"
-                :isComment="card.isComment"
-                :isShowDel="isMy"
-                @delete="deleteCard"
             />
         </div>
         <Mover :actions="actions" @handler="moverHandler" />
@@ -39,9 +26,10 @@
 <script>
     import Card from '@/components/Card';
     import Mover from '@/components/Mover';
-    import { jointer, tool } from '@/lib';
+    import { jointer, tool, store } from '@/lib';
 
     export default {
+        store,
         components: { Card, Mover },
         data() {
             return {
@@ -51,55 +39,52 @@
                 ],
                 avatar: '',
                 nickname: '',
-                cards: [],
-                stamp: Date.now(),
-                isAll: false,
-                isMy: false,
+                type: 0,
             };
         },
         computed: {
             actions() {
-                return `贴卡片&${this.isMy ? '全部' : '我的'}卡片`;
+                return `贴卡片&${this.type === 0 ? '我的' : '全部'}卡片`;
             },
-        },
-        watch: {
-            cards(now) {
-                if (now.length > 0) this.stamp = now[now.length - 1].stamp * 1000;
+            cards() {
+                return this.$store.state.cards || [];
             },
         },
         beforeMount() {
-            this.getCards(tool.formatTime(Date.now()), false);
+            this.initCards();
         },
         methods: {
-            getCards(time, isMy, isRefresh = false) {
-                this.isMy = isMy;
-                return new Promise(async (resolve) => {
-                    const cards = await jointer.getCards(time, isMy);
-                    if (cards.length < 20) this.isAll = true;
-                    this.cards = isRefresh ? cards : this.cards.concat(cards);
-                    resolve();
-                });
+            async initCards() {
+                global.cardsIsAll = false;
+                const cards = await jointer.getCards(tool.formatTime(Date.now()), this.type === -1);
+                if (cards.length < 20) global.cardsIsAll = true;
+                this.$store.commit('setCards', cards);
+                wx.stopPullDownRefresh();
+            },
+            async addCards() {
+                if (!global.cardsIsAll) {
+                    const stamp = this.cards[this.cards.length - 1].stamp * 1000;
+                    const cards = await jointer.getCards(tool.formatTime(stamp), this.type === -1);
+                    if (cards.length < 20) global.cardsIsAll = true;
+                    this.$store.commit('setCards', [...this.cards].concat(cards));
+                }
             },
             moverHandler(index) {
                 switch (index) {
                     case 0: wx.navigateTo({ url: '/pages/painter/painter' }); break;
-                    case 1: this.getCards(tool.formatTime(Date.now()), !this.isMy, true); break;
+                    case 1: this.type = (this.type === 0 ? -1 : 0); this.initCards(); break;
                     default: break;
                 }
             },
             deleteCard(index) {
-                this.cards.splice(index, 1);
+                this.$store.commit('deleteCard', index);
             },
         },
-        async onPullDownRefresh() {
-            await this.getCards(tool.formatTime(Date.now()), this.isMy, true);
-            this.isAll = false;
-            wx.stopPullDownRefresh();
+        onPullDownRefresh() {
+            this.initCards();
         },
         onReachBottom() {
-            if (!this.isAll) {
-                this.getCards(tool.formatTime(this.stamp), this.isMy);
-            }
+            this.addCards();
         },
         onShareAppMessage() {
             return {

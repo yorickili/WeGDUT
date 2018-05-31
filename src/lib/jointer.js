@@ -1,9 +1,10 @@
 import tool from './tool';
 import qiniu from './qiniu';
+import { anon } from '../config';
 
 const request = (params) => {
     return new Promise((resolve, reject) => {
-        wx.showLoading();
+        wx.showLoading({ mask: true });
         wx.request({
             url: `https://wegdut.yoricklee.com/test${params.url}`,
             method: params.method || 'POST',
@@ -274,8 +275,8 @@ const getCards = ($time = 0, $isMy = false) => {
             /* eslint-disable no-underscore-dangle */
             return {
                 id: item._id,
-                avatar: item.isAnon ? 'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.vyTbWxZnOxIu3f6051380cd24c57ba5aba91693340ba.png' : item.user_id.avatarUrl,
-                nickname: item.isAnon ? '匿名同学' : item.user_id.nickName,
+                avatar: item.isAnon ? anon.avatar : item.user_id.avatarUrl,
+                nickname: item.isAnon ? anon.nickname : item.user_id.nickName,
                 stamp: item.createdAt,
                 time: tool.getLapseTime(item.createdAt * 1000),
                 device: item.phone || '未知设备',
@@ -285,8 +286,8 @@ const getCards = ($time = 0, $isMy = false) => {
                 isLike: item.isLiked,
                 comments: item.comments.map((comment) => {
                     return {
-                        avatar: comment.isAnon ? 'http://oox3shbsf.bkt.clouddn.com/tmp/wx45380ff8bc1c2e10.o6zAJsyFJyypE_zOyMM45R8FzfGA.vyTbWxZnOxIu3f6051380cd24c57ba5aba91693340ba.png' : comment.from_id.avatarUrl,
-                        nickname: comment.isAnon ? '匿名同学' : comment.from_id.nickName,
+                        avatar: comment.isAnon ? anon.avatar : comment.from_id.avatarUrl,
+                        nickname: comment.isAnon ? anon.nickname : comment.from_id.nickName,
                         text: comment.content,
                     };
                 }),
